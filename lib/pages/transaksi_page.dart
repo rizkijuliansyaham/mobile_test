@@ -7,10 +7,12 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:test_qtasnim/models/transaksi_model.dart';
+import 'package:test_qtasnim/pages/barang_page.dart';
 import 'package:test_qtasnim/services/barang_repo.dart';
 import 'package:test_qtasnim/services/transaksi_repo.dart';
 import 'package:test_qtasnim/utils/theme.dart';
 import 'package:http/http.dart' as http;
+import 'package:test_qtasnim/widgets/transaksi_dialog.dart';
 
 class TransaksiPage extends StatefulWidget {
   const TransaksiPage({Key? key}) : super(key: key);
@@ -52,19 +54,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
     super.dispose();
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: currentDate,
-        firstDate: DateTime(2015),
-        lastDate: DateTime(2050));
-    if (pickedDate != null && pickedDate != currentDate)
-      setState(() {
-        currentDate = pickedDate;
-        print(currentDate);
-      });
-  }
-
   Future fetchDataTransaksi() async {
     try {
       isDataLoading = true;
@@ -95,18 +84,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
     });
   }
 
-// void addNamaBarang() async {
-
-// }
-
-//   void getNamaBarang() async {
-// for (var i = 0; i < 4; i++) {
-//    await BarangRepo.getDataBarang();
-//     namaBarang.add(BarangRepo().barangModel!.namaBarang!);
-// }
-
-//   }
-
   Future fetchDataBarang() async {
     try {
       isDataLoading = true;
@@ -126,8 +103,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
     } finally {
       isDataLoading = false;
     }
-    // await TransaksiRepo.getDataTransaksi();
-    // dataTransaksi.addAll(TransaksiRepo.transaksiModel!.);
   }
 
   loadDataBarang() async {
@@ -201,98 +176,11 @@ class _TransaksiPageState extends State<TransaksiPage> {
         });
   }
 
-  Future<void> showDialogAdd(BuildContext context, int id) async {
+  Future<void> showDialogAdd(int id, List barang) async {
     showDialog(
         context: context,
         builder: (context) {
-          final TextEditingController namaBarang = TextEditingController();
-          final TextEditingController jumlahTerjual = TextEditingController();
-
-          return AlertDialog(
-            content: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("Tambah Transaksi",
-                        style: TextStyle(
-                            color: BaseTheme.color,
-                            fontWeight: FontWeight.bold)),
-                    SizedBox(height: 12),
-                    TextFormField(
-                      keyboardType: TextInputType.text,
-                      controller: namaBarang,
-                      decoration: InputDecoration(
-                          hintText: 'Contoh : Teh', labelText: 'Nama Barang'),
-                      validator: (value) {
-                        if (value!.isNotEmpty) {
-                          return null;
-                        } else {
-                          return "Harus diisi";
-                        }
-                      },
-                    ),
-                    TextFormField(
-                      keyboardType: TextInputType.number,
-                      controller: jumlahTerjual,
-                      decoration: InputDecoration(
-                          hintText: 'Contoh : 12', labelText: 'Jumlah Terjual'),
-                      validator: (value) {
-                        if (value!.isNotEmpty) {
-                          return null;
-                        } else {
-                          return "Harus diisi";
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          _selectDate(context);
-                        },
-                        icon: Icon(Icons.date_range_outlined))
-                  ],
-                )),
-            actions: [
-              InkWell(
-                onTap: (() {
-                  if (_formKey.currentState!.validate()) {
-                    // putStatusKontrolAuto(1, index);
-                    int id_transaksi = id + 1;
-
-                    String nama_barang = namaBarang.text.toString();
-                    int jumlah_terjual =
-                        int.parse(jumlahTerjual.text.toString());
-                    String tanggal = currentDate.toString();
-                    List<String> tanggalSplit = tanggal.split(' ');
-                    String tanggal_transaksi = '${tanggalSplit[0]}';
-                    print(tanggal_transaksi);
-                    // putStatusKontrolParameter("$parameter", index);
-                    TransaksiRepo.addTransaksi(
-                        id, nama_barang, jumlah_terjual, tanggal_transaksi);
-
-                    Navigator.of(context).pop();
-                  }
-                }),
-                child: Container(
-                  height: 40,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: BaseTheme.color,
-                      borderRadius: BorderRadius.circular(4)),
-                  child: Center(
-                    child: Text(
-                      "Tambah",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          );
+          return TransaksiDialogAdd(id: id, a: barang);
         });
   }
 
@@ -397,6 +285,37 @@ class _TransaksiPageState extends State<TransaksiPage> {
                         child: Center(child: Text('Tidak Ada Data')));
                   }
                 }),
+            // StreamBuilder(
+            //   stream: dataBarang.stream,
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasError) {
+            //       return SizedBox(
+            //         height: 1,
+            //       );
+            //     } else if (snapshot.hasData) {
+            //       var jumlahData = snapshot.data!.length;
+            //       var data = snapshot.data;
+            //       var nama = List<String>.generate(0, (_) => [].toString());
+            //       for (var i = 0; i < jumlahData; i++) {}
+            //       return SizedBox(
+            //         height: 1,
+            //       );
+            //     } else if (snapshot.connectionState != ConnectionState.done) {
+            //       return SizedBox(
+            //         height: 1,
+            //       );
+            //     } else if (!snapshot.hasData &&
+            //         snapshot.connectionState == ConnectionState.done) {
+            //       return SizedBox(
+            //         height: 1,
+            //       );
+            //     } else {
+            //       return SizedBox(
+            //         height: 1,
+            //       );
+            //     }
+            //   },
+            // ),
             SizedBox(
               height: 70,
             ),
@@ -472,7 +391,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
             child: Center(
                 child: InkWell(
               onTap: () {
-                showDialogAdd(context, idTerakhir + 1);
+                showDialogAdd(idTerakhir + 1, namaBarang);
               },
               child: Container(
                 height: 40,

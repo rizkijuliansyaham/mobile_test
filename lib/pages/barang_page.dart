@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart' as http;
+import 'package:test_qtasnim/services/barang_repo.dart';
 import 'package:test_qtasnim/utils/theme.dart';
+import 'package:test_qtasnim/widgets/barang_dialog.dart';
 
 class BarangPage extends StatefulWidget {
   const BarangPage({Key? key}) : super(key: key);
@@ -19,8 +22,11 @@ class _BarangPageState extends State<BarangPage> {
   late StreamController dataJenis;
   List namaBarang = [];
   List namaJenis = [];
+  List idJenis = [];
+  List testList = ["satu", "dua"];
   bool isDataLoading = false;
   Timer? _timer;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -94,9 +100,17 @@ class _BarangPageState extends State<BarangPage> {
     });
   }
 
+  Future<void> showDialogAddBarang(List<dynamic> a) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return BarangDialogAdd(a: a);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
         Expanded(
           flex: 1,
@@ -208,7 +222,9 @@ class _BarangPageState extends State<BarangPage> {
                           color: BaseTheme.color,
                           borderRadius: BorderRadius.circular(20)),
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          showDialogAddBarang(namaJenis);
+                        },
                         child: Center(
                             child: Text(
                           "Tambah Barang",
@@ -257,15 +273,20 @@ class _BarangPageState extends State<BarangPage> {
                           var data = snapshot.data;
                           var jenis =
                               List<String>.generate(0, (_) => [].toString());
+                          var idGet = List<int>.generate(
+                              0, (_) => int.parse([].toString()));
                           // print(jenis);
 
                           for (var i = 0; i < jumlahData; i++) {
                             jenis.add(data[i]['jenis_barang']);
+                            idGet.add(data[i]['id_jenis']);
                           }
 
                           namaJenis = jenis;
+                          idJenis = idGet;
 
-                          print(namaJenis);
+                          // print(namaJenis);
+                          // print(idGet);
 
                           // print(jenis);
 
