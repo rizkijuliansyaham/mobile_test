@@ -39,10 +39,6 @@ class _HomePageState extends State<HomePage> {
                             : Container(),
       )),
       bottomNavigationBar: BottomBar(selectedIndex: (i) {
-        // change the page according to the index
-        // uncomment in case you want to implement more pages and make sure
-        // to create a _selectedIndex variable
-
         setState(() {
           _selectedIndex = i;
         });

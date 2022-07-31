@@ -1,24 +1,27 @@
-// import '../models/transaksi.dart';
-// import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-// class TransaksiRepo {
-//   static const String _baseUrl = 'http://localhost:5000/';
+import 'package:test_qtasnim/models/transaksi_model.dart';
+import 'package:http/http.dart' as http;
 
-//   Future<List<Transaksi>> getTransaksi() async {
-//     const requestUrl = '${_baseUrl}Tansaksi';
+class TransaksiRepo {
+  static TransaksiModel? transaksiModel;
 
-//     try {
-//        final response = await http.Client().get(Uri.parse(requestUrl));
-//       if (response.statusCode == 200) {
-//         final json = jsonDecode(response.body) as Map<String, dynamic>;
-//         final data = json['Data'] as List<dynamic>;
-//         print(data);
-//         return data.map((e) {
-//           return Transaksi.fromMap(e);
-//         }).toList();
-//     } catch (e) {
-//       throw DataError(message: e.toString());
-//     }
-//   }
-// }
-// }
+  static getDataTransaksi() async {
+    try {
+      String apiURL = 'http://192.168.8.101:5000/Transaksi';
+
+      var apiResult = await http.get(Uri.parse(apiURL));
+
+      if (apiResult.statusCode == 200) {
+        /// successfully get data
+        var jsonObject = json.decode(apiResult.body);
+        transaksiModel = TransaksiModel.fromJson(jsonObject);
+      } else {
+        /// failure get data
+        print(apiResult.statusCode);
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+}

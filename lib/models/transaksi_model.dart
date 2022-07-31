@@ -1,16 +1,16 @@
-class Transaksi {
+class TransaksiModel {
   int? idTransaksi;
   String? namaBarang;
   int? jumlahTerjual;
   String? tanggalTransaksi;
 
-  Transaksi(
+  TransaksiModel(
       {this.idTransaksi,
       this.namaBarang,
       this.jumlahTerjual,
       this.tanggalTransaksi});
 
-  Transaksi.fromJson(Map<String, dynamic> json) {
+  TransaksiModel.fromJson(Map<String, dynamic> json) {
     idTransaksi = json['id_transaksi'];
     namaBarang = json['nama_barang'];
     jumlahTerjual = json['jumlah_terjual'];
