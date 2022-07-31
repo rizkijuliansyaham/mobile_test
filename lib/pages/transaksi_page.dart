@@ -7,6 +7,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:test_qtasnim/models/transaksi_model.dart';
+import 'package:test_qtasnim/services/barang_repo.dart';
 import 'package:test_qtasnim/services/transaksi_repo.dart';
 import 'package:test_qtasnim/utils/theme.dart';
 import 'package:http/http.dart' as http;
@@ -24,6 +25,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
   final _formKey = GlobalKey<FormState>();
   late StreamController dataTransaksi;
   late StreamController dataBarang;
+  List namaBarang = [];
 
   bool isDataLoading = false;
   int idTerakhir = 0;
@@ -39,7 +41,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
     dataBarang = new StreamController();
     _timer = Timer.periodic(Duration(milliseconds: 300), (_) {
       loadDataTransaksi();
-      // loadDataBarang();
+      loadDataBarang();
     });
     super.initState();
   }
@@ -93,13 +95,25 @@ class _TransaksiPageState extends State<TransaksiPage> {
     });
   }
 
+// void addNamaBarang() async {
+
+// }
+
+//   void getNamaBarang() async {
+// for (var i = 0; i < 4; i++) {
+//    await BarangRepo.getDataBarang();
+//     namaBarang.add(BarangRepo().barangModel!.namaBarang!);
+// }
+
+//   }
+
   Future fetchDataBarang() async {
     try {
       isDataLoading = true;
       final response =
           await http.get(Uri.tryParse('http://192.168.8.101:5000/Barang')!);
       if (response.statusCode == 200) {
-        // print(response.body);
+        print(response.body);
         return json.decode(response.body);
 
         // final response = await TransaksiRepo.getDataTransaksi();

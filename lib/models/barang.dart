@@ -1,11 +1,11 @@
-class Barang {
+class BarangModel {
   String? namaBarang;
   int? stok;
   int? idJenis;
 
-  Barang({this.namaBarang, this.stok, this.idJenis});
+  BarangModel({this.namaBarang, this.stok, this.idJenis});
 
-  Barang.fromJson(Map<String, dynamic> json) {
+  BarangModel.fromJson(Map<String, dynamic> json) {
     namaBarang = json['nama_barang'];
     stok = json['stok'];
     idJenis = json['id_jenis'];
