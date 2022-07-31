@@ -36,8 +36,8 @@ class _BottomBarState extends State<BottomBar> {
                             });
                           }),
                       IconBottomBar(
-                          text: "Jenis",
-                          icon: Icons.garage_outlined,
+                          text: "Search",
+                          icon: Icons.search_outlined,
                           selected: _selectedIndex == 1,
                           onPressed: () {
                             setState(() {
