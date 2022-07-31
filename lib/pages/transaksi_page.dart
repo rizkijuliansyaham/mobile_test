@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
@@ -23,8 +24,10 @@ class _TransaksiPageState extends State<TransaksiPage> {
   final _formKey = GlobalKey<FormState>();
   late StreamController dataTransaksi;
   late StreamController dataBarang;
+
   bool isDataLoading = false;
   int idTerakhir = 0;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -32,12 +35,19 @@ class _TransaksiPageState extends State<TransaksiPage> {
     // fetchDataTransaksi();
     DateTime currentDate = DateTime.now();
     dataTransaksi = new StreamController();
+
     dataBarang = new StreamController();
-    Timer.periodic(Duration(milliseconds: 300), (_) {
+    _timer = Timer.periodic(Duration(milliseconds: 300), (_) {
       loadDataTransaksi();
-      loadDataBarang();
+      // loadDataBarang();
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -76,6 +86,13 @@ class _TransaksiPageState extends State<TransaksiPage> {
     // dataTransaksi.addAll(TransaksiRepo.transaksiModel!.);
   }
 
+  loadDataTransaksi() async {
+    fetchDataTransaksi().then((res) async {
+      dataTransaksi.add(res);
+      return res;
+    });
+  }
+
   Future fetchDataBarang() async {
     try {
       isDataLoading = true;
@@ -97,13 +114,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
     }
     // await TransaksiRepo.getDataTransaksi();
     // dataTransaksi.addAll(TransaksiRepo.transaksiModel!.);
-  }
-
-  loadDataTransaksi() async {
-    fetchDataTransaksi().then((res) async {
-      dataTransaksi.add(res);
-      return res;
-    });
   }
 
   loadDataBarang() async {
@@ -280,7 +290,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
           physics: ClampingScrollPhysics(),
           children: [
             SizedBox(
-              height: 110,
+              height: 100,
             ),
             StreamBuilder<dynamic>(
                 stream: dataTransaksi.stream,
@@ -383,9 +393,21 @@ class _TransaksiPageState extends State<TransaksiPage> {
           child: Column(
             children: [
               Container(
-                height: 70,
+                height: 60,
                 width: double.infinity,
-                color: Colors.red,
+                color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Text(
+                        "Data Transaksi",
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                ),
               ),
               Container(
                 height: 40,
