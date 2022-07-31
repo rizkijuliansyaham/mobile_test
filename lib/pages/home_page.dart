@@ -6,6 +6,7 @@ import 'package:test_qtasnim/pages/barang_page.dart';
 import 'package:test_qtasnim/pages/info_page.dart';
 import 'package:test_qtasnim/pages/jenis_page.dart';
 import 'package:test_qtasnim/pages/report_page.dart';
+import 'package:test_qtasnim/pages/transaksi_page.dart';
 import 'package:test_qtasnim/widgets/bottom_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,19 +31,7 @@ class _HomePageState extends State<HomePage> {
             : _selectedIndex == 1
                 ? JenisPage()
                 : _selectedIndex == 2
-                    ? ListView(
-                        children: [
-                          Text("Selected"),
-                          Text("Selected"),
-                          Text("Selected"),
-                          Text("Selected"),
-                          Text("Selected"),
-                          Text("Selected"),
-                          Text("Selected"),
-                          Text("Selected"),
-                          Text("Selected"),
-                        ],
-                      )
+                    ? TransaksiPage()
                     : _selectedIndex == 3
                         ? ReportPage()
                         : _selectedIndex == 4
