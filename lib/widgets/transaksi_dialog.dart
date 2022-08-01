@@ -18,9 +18,18 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController namaBarang = TextEditingController();
   final TextEditingController jumlahTerjual = TextEditingController();
-  late TextEditingController tanggal =
-      TextEditingController(text: currentDate.toString());
+  late TextEditingController tanggal = TextEditingController();
   DateTime currentDate = DateTime.now();
+
+  @override
+  void initState() {
+    DateTime currentDate = DateTime.now();
+    var str = currentDate.toString();
+    var arr = str.split(' ');
+    tanggal = TextEditingController(text: arr[0]);
+
+    super.initState();
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -28,10 +37,15 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
         initialDate: currentDate,
         firstDate: DateTime(2015),
         lastDate: DateTime(2050));
+    var str = currentDate.toString();
+    var arr = str.split(' ');
     if (pickedDate != null && pickedDate != currentDate)
       setState(() {
         currentDate = pickedDate;
-        tanggal = TextEditingController(text: currentDate.toString());
+        var str = currentDate.toString();
+        var arr = str.split(' ');
+        print(arr[0]);
+        tanggal = TextEditingController(text: arr[0]);
         print(currentDate);
       });
   }
@@ -46,7 +60,7 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
             children: [
               Text("Tambah Transaksi",
                   style: TextStyle(
-                      color: BaseTheme.color, fontWeight: FontWeight.bold)),
+                      color: Colors.black, fontWeight: FontWeight.bold)),
               SizedBox(height: 12),
               TextFormField(
                 keyboardType: TextInputType.text,
@@ -83,6 +97,7 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
                     child: TextFormField(
                       keyboardType: TextInputType.text,
                       controller: tanggal,
+                      enabled: false,
                       decoration: InputDecoration(
                           hintText: '2022-02-01', labelText: 'Tanggal'),
                       validator: (value) {
@@ -95,12 +110,15 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
                     ),
                   ),
                   IconButton(
-                      onPressed: () {
-                        _selectDate(context);
-                        print(currentDate);
-                        // tanggal = currentDate.toString();
-                      },
-                      icon: Icon(Icons.date_range_outlined)),
+                    onPressed: () {
+                      _selectDate(context);
+                      print(currentDate);
+                      // tanggal = currentDate.toString();
+                    },
+                    icon: Icon(Icons.date_range_outlined),
+                    iconSize: 40,
+                    color: BaseTheme.color,
+                  ),
                 ],
               )
             ],

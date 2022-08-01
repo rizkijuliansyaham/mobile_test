@@ -153,6 +153,9 @@ class _TransaksiPageState extends State<TransaksiPage> {
                 onTap: (() {
                   deleteDataTransaksi(id);
                   Navigator.of(context).pop();
+                  setState(() {
+                    _getTransaksi = TransaksiRepo().getTransaksi();
+                  });
                 }),
                 child: Container(
                   height: 40,
@@ -190,7 +193,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
           physics: ClampingScrollPhysics(),
           children: [
             SizedBox(
-              height: 190,
+              height: 200,
             ),
             FutureBuilder<List<TransaksiModel>>(
               future: _getTransaksi,
@@ -206,7 +209,32 @@ class _TransaksiPageState extends State<TransaksiPage> {
                           .map((transaksi) => GestureDetector(
                                 onTap: () {},
                                 // child: CoinCard(coin: coin),
-                                child: TransaksiCard(transaksi: transaksi),
+                                child: Stack(
+                                  children: [
+                                    Flexible(
+                                        child: TransaksiCard(
+                                            transaksi: transaksi)),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 4, right: 5),
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: IconButton(
+                                            onPressed: () {
+                                              showDialogDelete(
+                                                  context,
+                                                  "Apakah Anda yakin ingin menghapus data ini?",
+                                                  transaksi.idTransaksi!);
+                                            },
+                                            icon: Icon(
+                                              Icons.delete_outline_outlined,
+                                              size: 18,
+                                              color: Colors.red,
+                                            )),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ))
                           .toList(),
                     ),
@@ -349,7 +377,12 @@ class _TransaksiPageState extends State<TransaksiPage> {
               Container(
                 height: 140,
                 width: double.infinity,
-                color: Colors.green,
+                // color: Colors.green,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/transaksi.jpg'),
+                      fit: BoxFit.cover),
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -357,7 +390,9 @@ class _TransaksiPageState extends State<TransaksiPage> {
                       child: Text(
                         "Data Transaksi",
                         style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
                       ),
                     )
                   ],
@@ -366,7 +401,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Container(
-                  height: 40,
+                  height: 60,
                   width: double.infinity,
                   color: Colors.white,
                   child: Padding(
