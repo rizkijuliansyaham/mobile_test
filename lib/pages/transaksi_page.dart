@@ -125,7 +125,8 @@ class _TransaksiPageState extends State<TransaksiPage> {
               children: [
                 Text(pesan,
                     style: TextStyle(
-                        color: BaseTheme.color, fontWeight: FontWeight.bold)),
+                      color: Colors.red,
+                    )),
               ],
             ),
             actions: [
@@ -139,12 +140,12 @@ class _TransaksiPageState extends State<TransaksiPage> {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: BaseTheme.color, width: 0.4)),
+                      border: Border.all(color: Colors.red, width: 0.4)),
                   child: Center(
                     child: Text(
                       "Tidak",
                       style: TextStyle(
-                          color: BaseTheme.color, fontWeight: FontWeight.bold),
+                          color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -161,7 +162,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
                   height: 40,
                   width: 100,
                   decoration: BoxDecoration(
-                      color: BaseTheme.color,
+                      color: Colors.red,
                       borderRadius: BorderRadius.circular(4)),
                   child: Center(
                     child: Text(
@@ -387,12 +388,26 @@ class _TransaksiPageState extends State<TransaksiPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Center(
-                      child: Text(
-                        "Data Transaksi",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold),
+                      child: Stack(
+                        children: [
+                          Text(
+                            "Data Transaksi",
+                            style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                foreground: Paint()
+                                  ..style = PaintingStyle.stroke
+                                  ..strokeWidth = 5
+                                  ..color = Color.fromARGB(255, 99, 92, 92)),
+                          ),
+                          Text(
+                            "Data Transaksi",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     )
                   ],

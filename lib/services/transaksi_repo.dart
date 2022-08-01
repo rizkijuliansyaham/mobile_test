@@ -33,24 +33,24 @@ class TransaksiRepo {
     }
   }
 
-  static getDataTransaksi() async {
-    try {
-      String apiURL = 'http://192.168.8.100:5000/Transaksi';
+  // static getDataTransaksi() async {
+  //   try {
+  //     String apiURL = 'http://192.168.8.100:5000/Transaksi';
 
-      var apiResult = await http.get(Uri.parse(apiURL));
+  //     var apiResult = await http.get(Uri.parse(apiURL));
 
-      if (apiResult.statusCode == 200) {
-        /// successfully get data
-        var jsonObject = json.decode(apiResult.body);
-        // transaksiModel = TransaksiModel.fromJson(jsonObject);
-      } else {
-        /// failure get data
-        print(apiResult.statusCode);
-      }
-    } catch (error) {
-      print(error);
-    }
-  }
+  //     if (apiResult.statusCode == 200) {
+  //       /// successfully get data
+  //       var jsonObject = json.decode(apiResult.body);
+  //       // transaksiModel = TransaksiModel.fromJson(jsonObject);
+  //     } else {
+  //       /// failure get data
+  //       print(apiResult.statusCode);
+  //     }
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  // }
 
   static Future<dynamic> deleteTransaksi(int idTransaksi) async {
     String apiURL = 'http://192.168.8.100:5000/Transaksi/delete/$idTransaksi';

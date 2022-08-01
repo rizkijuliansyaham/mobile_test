@@ -1,10 +1,10 @@
-class Jenis {
+class JenisModel {
   int? idJenis;
   String? jenisBarang;
 
-  Jenis({this.idJenis, this.jenisBarang});
+  JenisModel({this.idJenis, this.jenisBarang});
 
-  Jenis.fromJson(Map<String, dynamic> json) {
+  JenisModel.fromJson(Map<String, dynamic> json) {
     idJenis = json['id_jenis'];
     jenisBarang = json['jenis_barang'];
   }

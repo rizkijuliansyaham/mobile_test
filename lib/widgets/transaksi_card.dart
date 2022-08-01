@@ -41,86 +41,11 @@ class TransaksiCard extends StatelessWidget {
                 size: 18,
                 color: Colors.transparent,
               ),
-              // IconButton(
-              //     onPressed: () {
-              //       showDialogDelete(
-              //           context,
-              //           "Apakah Anda yakin ingin menghapus data ini?",
-              //           transaksi.idTransaksi!);
-              //           // getTransaksi.
-
-              //     },
-              //     icon: Icon(
-              //       Icons.delete_outline_outlined,
-              //       size: 18,
-              //       color: Colors.red,
-              //     ))
+              //
             ],
           ),
         ),
       ),
     );
-  }
-
-  void deleteDataTransaksi(int id) async {
-    var delete = await TransaksiRepo.deleteTransaksi(id);
-  }
-
-  Future<void> showDialogDelete(
-      BuildContext context, String pesan, int id) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(pesan, style: TextStyle(color: BaseTheme.color)),
-              ],
-            ),
-            actions: [
-              InkWell(
-                onTap: (() {
-                  Navigator.of(context).pop();
-                }),
-                child: Container(
-                  height: 40,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: BaseTheme.color, width: 0.4)),
-                  child: Center(
-                    child: Text(
-                      "Tidak",
-                      style: TextStyle(
-                          color: BaseTheme.color, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: (() {
-                  deleteDataTransaksi(id);
-                  Navigator.of(context).pop();
-                }),
-                child: Container(
-                  height: 40,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: BaseTheme.color,
-                      borderRadius: BorderRadius.circular(4)),
-                  child: Center(
-                    child: Text(
-                      "Ya",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        });
   }
 }
