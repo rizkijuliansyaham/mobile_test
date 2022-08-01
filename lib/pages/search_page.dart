@@ -44,7 +44,7 @@ class _SearchPageState extends State<SearchPage> {
     try {
       isDataLoading = true;
       final response = await http.get(Uri.tryParse(
-          'http://192.168.8.101:5000/search2?search_query=$kataCari')!);
+          'http://192.168.8.100:5000/search2?search_query=$kataCari')!);
       if (response.statusCode == 200) {
         // print(response.body);
         return json.decode(response.body);

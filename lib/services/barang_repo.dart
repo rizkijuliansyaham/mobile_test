@@ -8,7 +8,7 @@ class BarangRepo {
 
   Future getDataBarang() async {
     try {
-      String apiURL = 'http://192.168.8.101:5000/Barang';
+      String apiURL = 'http://192.168.8.100:5000/Barang';
 
       var apiResult = await http.get(Uri.parse(apiURL));
 
@@ -27,7 +27,7 @@ class BarangRepo {
 
   static Future<dynamic> addBarang(
       String nama_barang, int stok, int id_jenis) async {
-    String apiURL = 'http://192.168.8.101:5000/Transaksi/create';
+    String apiURL = 'http://192.168.8.100:5000/Transaksi/create';
 
     Map<String, String> header = {
       'Content-type': 'application/json',

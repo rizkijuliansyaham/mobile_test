@@ -50,7 +50,7 @@ class _BarangPageState extends State<BarangPage> {
     try {
       isDataLoading = true;
       final response =
-          await http.get(Uri.tryParse('http://192.168.8.101:5000/Barang')!);
+          await http.get(Uri.tryParse('http://192.168.8.100:5000/Barang')!);
       if (response.statusCode == 200) {
         // print(response.body);
         return json.decode(response.body);
@@ -77,7 +77,7 @@ class _BarangPageState extends State<BarangPage> {
     try {
       isDataLoading = true;
       final response =
-          await http.get(Uri.tryParse('http://192.168.8.101:5000/Jenis')!);
+          await http.get(Uri.tryParse('http://192.168.8.100:5000/Jenis')!);
       if (response.statusCode == 200) {
         // print(response.body);
         return json.decode(response.body);
