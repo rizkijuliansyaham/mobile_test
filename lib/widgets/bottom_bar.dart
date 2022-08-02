@@ -12,7 +12,7 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -23,7 +23,7 @@ class _BottomBarState extends State<BottomBar> {
             child: Padding(
                 padding: const EdgeInsets.only(left: 25.0, right: 25.0),
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconBottomBar(
                           text: "Barang",
@@ -35,9 +35,19 @@ class _BottomBarState extends State<BottomBar> {
                               widget.selectedIndex(0);
                             });
                           }),
-                      IconBottomBar(
-                          text: "Search",
-                          icon: Icons.search_outlined,
+                      // IconBottomBar(
+                      //     text: "Search",
+                      //     icon: Icons.search_outlined,
+                      //     selected: _selectedIndex == 1,
+                      //     onPressed: () {
+                      //       setState(() {
+                      //         _selectedIndex = 1;
+                      //         widget.selectedIndex(1);
+                      //       });
+                      //     }),
+                      IconBottomBar2(
+                          text: "Pay",
+                          icon: Icons.compare_arrows_sharp,
                           selected: _selectedIndex == 1,
                           onPressed: () {
                             setState(() {
@@ -45,9 +55,9 @@ class _BottomBarState extends State<BottomBar> {
                               widget.selectedIndex(1);
                             });
                           }),
-                      IconBottomBar2(
-                          text: "Pay",
-                          icon: Icons.compare_arrows_sharp,
+                      IconBottomBar(
+                          text: "Report",
+                          icon: Icons.area_chart_outlined,
                           selected: _selectedIndex == 2,
                           onPressed: () {
                             setState(() {
@@ -55,26 +65,16 @@ class _BottomBarState extends State<BottomBar> {
                               widget.selectedIndex(2);
                             });
                           }),
-                      IconBottomBar(
-                          text: "Report",
-                          icon: Icons.area_chart_outlined,
-                          selected: _selectedIndex == 3,
-                          onPressed: () {
-                            setState(() {
-                              _selectedIndex = 3;
-                              widget.selectedIndex(3);
-                            });
-                          }),
-                      IconBottomBar(
-                          text: "Info",
-                          icon: Icons.info_outline,
-                          selected: _selectedIndex == 4,
-                          onPressed: () {
-                            setState(() {
-                              _selectedIndex = 4;
-                              widget.selectedIndex(4);
-                            });
-                          }),
+                      // IconBottomBar(
+                      //     text: "Info",
+                      //     icon: Icons.info_outline,
+                      //     selected: _selectedIndex == 4,
+                      //     onPressed: () {
+                      //       setState(() {
+                      //         _selectedIndex = 4;
+                      //         widget.selectedIndex(4);
+                      //       });
+                      //     }),
                     ]))));
   }
 }

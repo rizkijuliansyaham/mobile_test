@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +28,15 @@ class _HomePageState extends State<HomePage> {
         height: MediaQuery.of(context).size.height,
         child: _selectedIndex == 0
             ? BarangPage()
+            // : _selectedIndex == 1
+            //     ? SearchPage()
             : _selectedIndex == 1
-                ? SearchPage()
+                ? TransaksiPage()
                 : _selectedIndex == 2
-                    ? TransaksiPage()
-                    : _selectedIndex == 3
-                        ? ReportPage()
-                        : _selectedIndex == 4
-                            ? InfoApps()
-                            : Container(),
+                    ? ReportPage()
+                    // : _selectedIndex == 4
+                    //     ? InfoApps()
+                    : Container(),
       )),
       bottomNavigationBar: BottomBar(selectedIndex: (i) {
         setState(() {
