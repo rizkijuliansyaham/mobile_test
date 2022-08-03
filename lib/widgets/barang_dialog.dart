@@ -2,11 +2,15 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:test_qtasnim/services/barang_repo.dart';
 import 'package:test_qtasnim/utils/theme.dart';
 
 class BarangDialogAdd extends StatefulWidget {
-  final List a;
-  const BarangDialogAdd({Key? key, required this.a}) : super(key: key);
+  final List nama;
+  final List idJenis;
+
+  const BarangDialogAdd({Key? key, required this.nama, required this.idJenis})
+      : super(key: key);
 
   @override
   State<BarangDialogAdd> createState() => _BarangDialogAddState();
@@ -17,6 +21,21 @@ class _BarangDialogAddState extends State<BarangDialogAdd> {
   final TextEditingController namaBarang = TextEditingController();
   final TextEditingController stok = TextEditingController();
   String? selectedValue;
+
+  @override
+  void initState() {
+    // widget.nama.map((e) {
+    //   var str = e;
+    //   var arr = str.split(',');
+    //   var id = str[0];
+    //   var jenisnya = str[1];
+    // }).toList();
+    // var str = data[index]['tanggal_transaksi'];
+    //                         var arr = str.split('T');
+    //                         var tanggal = arr[0].split('-');
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +104,7 @@ class _BarangDialogAddState extends State<BarangDialogAdd> {
                     ),
                   ],
                 ),
-                items: widget.a
+                items: widget.nama
                     .map((item) => DropdownMenuItem<String>(
                           value: item,
                           child: Text(
@@ -103,6 +122,8 @@ class _BarangDialogAddState extends State<BarangDialogAdd> {
                 onChanged: (value) {
                   setState(() {
                     selectedValue = value as String;
+                    print(selectedValue);
+                    print(widget.nama.indexOf('$selectedValue'));
                   });
                 },
               ))
@@ -114,8 +135,10 @@ class _BarangDialogAddState extends State<BarangDialogAdd> {
             if (_formKey.currentState!.validate()) {
               String nama_barang = namaBarang.text.toString();
               int stokAwal = int.parse(stok.text.toString());
+              int idJenisTerpilih = widget.idJenis
+                  .elementAt(widget.nama.indexOf('$selectedValue'));
 
-              // BarangRepo.addBarang(nama_barang, stokAwal, id_jenis)
+              BarangRepo.addBarang(nama_barang, stokAwal, idJenisTerpilih);
 
               // putStatusKontrolParameter("$parameter", index);
               // TransaksiRepo.addTransaksi(

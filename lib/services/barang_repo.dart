@@ -25,7 +25,7 @@ class BarangRepo {
   //   }
   // }
 
-  Future<List<BarangModel>> getTransaksi() async {
+  Future<List<BarangModel>> getBarang() async {
     const requestUrl = '${DataUrl.baseUrl}Barang';
 
     try {
@@ -52,7 +52,7 @@ class BarangRepo {
 
   static Future<dynamic> addBarang(
       String nama_barang, int stok, int id_jenis) async {
-    String apiURL = '${DataUrl.baseUrl}Transaksi/create';
+    String apiURL = '${DataUrl.baseUrl}Barang/create';
 
     Map<String, String> header = {
       'Content-type': 'application/json',

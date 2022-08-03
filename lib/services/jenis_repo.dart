@@ -49,4 +49,21 @@ class JenisRepo {
 
     return jsonObject;
   }
+
+  static Future<dynamic> deleteTransaksi(int id_jenis) async {
+    String apiURL = '${DataUrl.baseUrl}Jenis/delete/$id_jenis';
+
+    Map<String, String> header = {
+      'Content-type': 'application/json',
+    };
+
+    var apiResult = await http.delete(
+      Uri.parse(apiURL),
+      headers: header,
+    );
+
+    var jsonObject = json.decode(apiResult.body);
+
+    return jsonObject;
+  }
 }

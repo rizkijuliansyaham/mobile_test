@@ -30,6 +30,8 @@ class _BarangPageState extends State<BarangPage> {
   late Future<List<JenisModel>> _getJenis;
   String kataCari = "";
   int idJenisTerakhir = 0;
+  List idJenis = [];
+  List namaJenis = [];
   // late StreamController dataBarang;
   // late StreamController dataJenis;
   // List namaBarang = [];
@@ -42,11 +44,12 @@ class _BarangPageState extends State<BarangPage> {
 
   @override
   void initState() {
-    _getBarang = BarangRepo().getTransaksi();
+    _getBarang = BarangRepo().getBarang();
     _getJenis = JenisRepo().getJenis();
     kataCari = "";
 
-    List id = [];
+    List idJenis = [];
+    List namaJenis = [];
 
     // dataBarang = new StreamController();
     // dataJenis = new StreamController();
@@ -64,12 +67,14 @@ class _BarangPageState extends State<BarangPage> {
     super.dispose();
   }
 
-  Future<void> showDialogAddJenis(int id) async {
+  Future<void> showDialogAddJenis(
+      int id, Future<List<JenisModel>> _getJenis) async {
     showDialog(
         context: context,
         builder: (context) {
           // return TransaksiDialogAdd(id: id, a: barang);
           // return Container();
+          // return AddJeniss(id: id, getJenis: _getJenis);
           return AddJenis(id: id);
         });
   }
@@ -127,50 +132,126 @@ class _BarangPageState extends State<BarangPage> {
   //   });
   // }
 
-  Future<void> showDialogAddBarang(List<dynamic> a) async {
+  Future<void> showDialogAddBarang(
+      List<dynamic> namaJenis, List<dynamic> idJenis) async {
     showDialog(
         context: context,
         builder: (context) {
-          return BarangDialogAdd(a: a);
+          return BarangDialogAdd(nama: namaJenis, idJenis: idJenis);
+        });
+  }
+
+  Future<void> showDialogDelete(
+      BuildContext context, String pesan, int id) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(pesan,
+                    style: TextStyle(
+                      color: Colors.red,
+                    )),
+              ],
+            ),
+            actions: [
+              InkWell(
+                onTap: (() {
+                  Navigator.of(context).pop();
+                }),
+                child: Container(
+                  height: 40,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: Colors.red, width: 0.4)),
+                  child: Center(
+                    child: Text(
+                      "Tidak",
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: (() {
+                  JenisRepo.deleteTransaksi(id);
+                  Navigator.of(context).pop();
+                }),
+                child: Container(
+                  height: 40,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(4)),
+                  child: Center(
+                    child: Text(
+                      "Ya",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
         });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _header(),
-            Visibility(visible: kataCari == "", child: _jenis()),
-            Visibility(visible: kataCari == "", child: _tambahBarang()),
-            Visibility(visible: kataCari == "", child: _listBarang()),
-            Visibility(visible: kataCari != "", child: _searchValue()),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _header(),
+              Visibility(visible: kataCari == "", child: _jenis()),
+              Visibility(visible: kataCari == "", child: _tambahBarang()),
+              Visibility(visible: kataCari == "", child: _listBarang()),
+              Visibility(visible: kataCari != "", child: _searchValue()),
 
-            // Container(
-            //   height: 450,
-            //   color: Colors.amber,
-            // ),
-            // ListView.separated(
-            //     itemBuilder: (context, index) {
-            //       return Container();
-            //     },
-            //     separatorBuilder: (context, index) => Divider(),
-            //     itemCount: 3)
-            // StaggeredGridView.countBuilder(
-            //   crossAxisCount: 2,
-            //   itemBuilder: (context, index) {
-            //     return Container(
-            //       height: 10,
-            //       width: 10,
-            //       color: Colors.red,
-            //     );
-            //   },
-            //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-            // )
-          ],
+              // Container(
+              //   height: 450,
+              //   color: Colors.amber,
+              // ),
+              // ListView.separated(
+              //     itemBuilder: (context, index) {
+              //       return Container();
+              //     },
+              //     separatorBuilder: (context, index) => Divider(),
+              //     itemCount: 3)
+              // StaggeredGridView.countBuilder(
+              //   crossAxisCount: 2,
+              //   itemBuilder: (context, index) {
+              //     return Container(
+              //       height: 10,
+              //       width: 10,
+              //       color: Colors.red,
+              //     );
+              //   },
+              //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+              // )
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: Visibility(
+        visible: kataCari == "",
+        child: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              _getJenis = JenisRepo().getJenis();
+              _getBarang = BarangRepo().getBarang();
+            });
+          },
+          child: const Icon(Icons.refresh),
         ),
       ),
     );
@@ -341,6 +422,7 @@ class _BarangPageState extends State<BarangPage> {
   //     //           //       } else if (snapshot.hasData) {
   //     //           //         var jumlahData = snapshot.data!.length;
   //     //           //         var data = snapshot.data;
+  //  ngakalin get jenis id dan nama
   //     //           //         var jenis =
   //     //           //             List<String>.generate(0, (_) => [].toString());
   //     //           //         var idGet = List<int>.generate(
@@ -430,18 +512,18 @@ class _BarangPageState extends State<BarangPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            Text("Halo,"),
-            Text(
+            const Text("Halo,"),
+            const Text(
               "Pengguna",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
             Container(
@@ -458,7 +540,7 @@ class _BarangPageState extends State<BarangPage> {
                       Icons.search_rounded,
                       color: Colors.grey[500],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 12,
                     ),
                     Flexible(
@@ -476,7 +558,7 @@ class _BarangPageState extends State<BarangPage> {
                         }),
                         // controller: searchC,
                         textInputAction: TextInputAction.search,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Searching',
                           border: InputBorder.none,
                         ),
@@ -505,9 +587,9 @@ class _BarangPageState extends State<BarangPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Jenis Barang",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -516,17 +598,14 @@ class _BarangPageState extends State<BarangPage> {
                   padding: const EdgeInsets.only(right: 15.0),
                   child: InkWell(
                       onTap: () {
-                        showDialogAddJenis(idJenisTerakhir + 1);
-                        setState(() {
-                          _getJenis = JenisRepo().getJenis();
-                        });
+                        showDialogAddJenis(idJenisTerakhir + 1, _getJenis);
                       },
-                      child: Icon(Icons.add_circle_outline)),
+                      child: const Icon(Icons.add_circle_outline)),
                 )
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Container(
@@ -542,19 +621,98 @@ class _BarangPageState extends State<BarangPage> {
                       snapshot.data != null) {
                     final jenis = snapshot.data ?? [];
                     int idBelakang = 0;
+                    var jenisGet =
+                        List<String>.generate(0, (_) => [].toString());
+                    var idGet =
+                        List<int>.generate(0, (_) => int.parse([].toString()));
+                    // var jenis =     List<String>.generate(0, (_) => [].toString());
                     List data = jenis.map(
                       (e) {
                         idBelakang = int.parse(e.idJenis.toString());
+                        idGet.add(int.parse(e.idJenis.toString()));
+                        // jenisGet.add('${e.idJenis}, ${e.jenisBarang}');
+                        jenisGet.add('${e.jenisBarang}');
+
+                        // idJenis.add(int.parse(e.idJenis.toString()));
                       },
                     ).toList(); // Ngakalin get id terakhir karena backend belum set auto fill id
                     // print(data);
+                    // print(data.length);
+                    // print(idGet);
+                    print(jenisGet);
+                    idJenis = idGet;
+                    namaJenis = jenisGet;
+
+                    for (var i = 0; i < data.length; i++) {}
+
                     idJenisTerakhir = idBelakang;
                     return ListView(
                         scrollDirection: Axis.horizontal,
                         children: jenis
                             .map((item) => GestureDetector(
                                   onTap: () {},
-                                  child: JenisCard(jenis: item),
+                                  child: Stack(
+                                    children: [
+                                      JenisCard(jenis: item),
+                                      Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 8, 5, 8),
+                                          child: Container(
+                                            height: 70,
+                                            width: 160,
+                                            decoration: BoxDecoration(
+                                                // color: Colors.grey[200],
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 12, bottom: 12),
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.bottomRight,
+                                                child: Visibility(
+                                                  visible: item.idJenis! > 1,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      showDialogDelete(
+                                                          context,
+                                                          "Menghapus data jenis akan berpengaruh kepada perubahan seluruh jenis barang yang terhubung ke kategori 'Lain-lain' Apakah Anda yakin ingin menghapus ${item.jenisBarang.toString()}?",
+                                                          int.parse(item.idJenis
+                                                              .toString()));
+                                                      // JenisRepo.deleteTransaksi(
+                                                      //     int.parse(item.idJenis
+                                                      //         .toString()));
+                                                    },
+                                                    child: Icon(
+                                                      Icons.delete_outline,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )),
+                                      // const Padding(
+                                      //   padding:
+                                      //       EdgeInsets.only(right: 22, top: 6),
+                                      //   child: Align(
+                                      //     alignment: Alignment.topRight,
+                                      //     child: Icon(
+                                      //       Icons.remove_circle_outline,
+                                      //       color: Colors.red,
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                      // Align(
+                                      //   alignment: Alignment.bottomRight,
+                                      //   child: Icon(
+                                      //     Icons.remove_circle_outline_sharp,
+                                      //     color: Colors.red,
+                                      //     size: 16,
+                                      //   ),
+                                      // )
+                                    ],
+                                  ),
                                 ))
                             .toList());
                   } else {
@@ -619,28 +777,30 @@ class _BarangPageState extends State<BarangPage> {
             borderRadius: BorderRadius.circular(10)),
         child: Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 12,
             ),
-            Icon(
+            const Icon(
               Icons.list_alt_outlined,
               size: 80,
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Ada Barang Baru?",
                   style: TextStyle(fontSize: 22),
                 ),
                 InkWell(
-                    onTap: () {},
-                    child: Text("Tambah",
-                        style: TextStyle(
+                    onTap: () {
+                      showDialogAddBarang(namaJenis, idJenis);
+                    },
+                    child: const Text("Tambah",
+                        style: const TextStyle(
                             decoration: TextDecoration.underline,
                             fontSize: 22,
                             fontWeight: FontWeight.bold))),
@@ -656,17 +816,17 @@ class _BarangPageState extends State<BarangPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 15, left: 15),
+        const Padding(
+          padding: EdgeInsets.only(top: 15, left: 15),
           child: Text(
             "Barang yang kamu punya",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 12,
         ),
         FutureBuilder<List<BarangModel>>(
@@ -677,7 +837,7 @@ class _BarangPageState extends State<BarangPage> {
               final barang = snapshot.data ?? [];
 
               return ListView.separated(
-                  physics: ScrollPhysics(),
+                  physics: const ScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     // return BarangCard(barang: barang);
@@ -687,10 +847,10 @@ class _BarangPageState extends State<BarangPage> {
                                 onTap: () {},
                                 child: Stack(
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 22, top: 6),
-                                      child: Align(
+                                    const Padding(
+                                      padding:
+                                          EdgeInsets.only(right: 22, top: 6),
+                                      child: const Align(
                                         alignment: Alignment.topRight,
                                         child: Icon(
                                           Icons.remove_circle_outline,
@@ -716,7 +876,7 @@ class _BarangPageState extends State<BarangPage> {
                     //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
                     // );
                   },
-                  separatorBuilder: (context, index) => SizedBox(),
+                  separatorBuilder: (context, index) => const SizedBox(),
                   itemCount: 1);
 
               // return StaggeredGridView.countBuilder(
@@ -732,7 +892,7 @@ class _BarangPageState extends State<BarangPage> {
               //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
               // );
             } else {
-              return Text("Tidak ada barang");
+              return const Text("Tidak ada barang");
             }
           },
         )
@@ -749,7 +909,7 @@ class _BarangPageState extends State<BarangPage> {
           final barang = snapshot.data ?? [];
 
           return ListView.separated(
-              physics: ScrollPhysics(),
+              physics: const ScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 // return BarangCard(barang: barang);
@@ -759,9 +919,9 @@ class _BarangPageState extends State<BarangPage> {
                             onTap: () {},
                             child: Stack(
                               children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(right: 22, top: 6),
+                                BarangCard(barang: barangs),
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 22, top: 6),
                                   child: Align(
                                     alignment: Alignment.topRight,
                                     child: Icon(
@@ -770,7 +930,6 @@ class _BarangPageState extends State<BarangPage> {
                                     ),
                                   ),
                                 ),
-                                BarangCard(barang: barangs),
                               ],
                             ),
                           ))
@@ -788,7 +947,7 @@ class _BarangPageState extends State<BarangPage> {
                 //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
                 // );
               },
-              separatorBuilder: (context, index) => SizedBox(),
+              separatorBuilder: (context, index) => const SizedBox(),
               itemCount: 1);
 
           // return StaggeredGridView.countBuilder(
@@ -804,7 +963,7 @@ class _BarangPageState extends State<BarangPage> {
           //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
           // );
         } else {
-          return Text("Tidak ada barang");
+          return const Text("Tidak ada barang");
         }
       },
     );
