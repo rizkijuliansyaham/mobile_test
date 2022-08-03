@@ -19,7 +19,7 @@ class TransaksiRepo {
         // final data = TransaksiModel.fromJson(json);
         // print(data);
         final data = json as List<dynamic>;
-        print(data);
+        // print(data);
         return data.map(
           (e) {
             return TransaksiModel.fromJson(e);
@@ -50,8 +50,8 @@ class TransaksiRepo {
     return jsonObject;
   }
 
-  static Future<dynamic> addTransaksi(
-      int id, String nama_barang, int jumlah_terjual, String tanggal) async {
+  static Future<dynamic> addTransaksi(int id, String nama_barang, int id_jenis,
+      int jumlah_terjual, String tanggal) async {
     String apiURL = '${DataUrl.baseUrl}Transaksi/create';
 
     Map<String, String> header = {
@@ -60,6 +60,7 @@ class TransaksiRepo {
     var body = jsonEncode({
       'id_transaksi': id,
       'nama_barang': nama_barang,
+      'id_jenis': id_jenis,
       'jumlah_terjual': jumlah_terjual,
       'tanggal_transaksi': tanggal
     });

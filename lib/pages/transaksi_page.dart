@@ -6,12 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
+import 'package:test_qtasnim/models/barang.dart';
 import 'package:test_qtasnim/models/transaksi_model.dart';
 import 'package:test_qtasnim/pages/barang_page.dart';
 import 'package:test_qtasnim/services/barang_repo.dart';
 import 'package:test_qtasnim/services/transaksi_repo.dart';
 import 'package:test_qtasnim/utils/theme.dart';
 import 'package:http/http.dart' as http;
+import 'package:test_qtasnim/widgets/barang_card.dart';
 import 'package:test_qtasnim/widgets/transaksi_card.dart';
 import 'package:test_qtasnim/widgets/transaksi_dialog.dart';
 
@@ -26,11 +28,13 @@ class _TransaksiPageState extends State<TransaksiPage> {
   final TextEditingController searchC = TextEditingController();
   String kataCari = "";
   late Future<List<TransaksiModel>> _getTransaksi;
+  late Future<List<BarangModel>> _getBarang;
   // List dataTransaksi = [];
   final _formKey = GlobalKey<FormState>();
   // late StreamController dataTransaksi;
   // late StreamController dataBarang;
   List namaBarang = [];
+  List jenisBarang = [];
 
   bool isDataLoading = false;
   int idTerakhir = 0;
@@ -39,6 +43,8 @@ class _TransaksiPageState extends State<TransaksiPage> {
   @override
   void initState() {
     _getTransaksi = TransaksiRepo().getTransaksi();
+    _getBarang = BarangRepo().getBarang();
+
     // print(_getTransaksi);
     // DateTime currentDate = DateTime.now();
     // dataTransaksi = new StreamController();
@@ -180,11 +186,11 @@ class _TransaksiPageState extends State<TransaksiPage> {
         });
   }
 
-  Future<void> showDialogAdd(int id, List barang) async {
+  Future<void> showDialogAdd(int id, List barang, List jenis) async {
     showDialog(
         context: context,
         builder: (context) {
-          return TransaksiDialogAdd(id: id, a: barang);
+          return TransaksiDialogAdd(id: id, barang: barang, jenis: jenis);
         });
   }
 
@@ -195,6 +201,103 @@ class _TransaksiPageState extends State<TransaksiPage> {
         _listTransaksi(),
         _header(),
         _addTransaksi(),
+        Visibility(visible: true, child: _listBarang()),
+      ],
+    );
+  }
+
+  Widget _listBarang() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FutureBuilder<List<BarangModel>>(
+          future: _getBarang,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.data != null) {
+              final barang = snapshot.data ?? [];
+              var barangGet = List<String>.generate(0, (_) => [].toString());
+              var jenisGet =
+                  List<int>.generate(0, (_) => int.parse([].toString()));
+              List data = barang.map(
+                (e) {
+                  barangGet.add('${e.namaBarang}');
+                  jenisGet.add(int.parse(e.idJenis.toString()));
+                  // idBelakang = int.parse(e.idJenis.toString());
+                  // idGet.add(int.parse(e.idJenis.toString()));
+                  // // jenisGet.add('${e.idJenis}, ${e.jenisBarang}');
+                  // jenisGet.add('${e.jenisBarang}');
+
+                  // idJenis.add(int.parse(e.idJenis.toString()));
+                },
+              ).toList(); // Ngakalin get nama barang lisy
+              // print(barangGet);
+              namaBarang = barangGet;
+              jenisBarang = jenisGet;
+              return Container();
+
+              // return ListView.separated(
+              //     physics: const ScrollPhysics(),
+              //     shrinkWrap: true,
+              //     itemBuilder: (context, index) {
+              //       // return BarangCard(barang: barang);
+              //       return Column(
+              //         children: barang
+              //             .map((barangs) => GestureDetector(
+              //                   onTap: () {},
+              //                   child: Stack(
+              //                     children: [
+              //                       const Padding(
+              //                         padding:
+              //                             EdgeInsets.only(right: 22, top: 6),
+              //                         child: const Align(
+              //                           alignment: Alignment.topRight,
+              //                           child: Icon(
+              //                             Icons.remove_circle_outline,
+              //                             color: Colors.red,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       BarangCard(barang: barangs),
+              //                     ],
+              //                   ),
+              //                 ))
+              //             .toList(),
+              //       );
+              //       // return StaggeredGridView.countBuilder(
+              //       //   crossAxisCount: 2,
+              //       //   itemBuilder: (context, index) {
+              //       //     return Container(
+              //       //       height: 10,
+              //       //       width: 10,
+              //       //       color: Colors.red,
+              //       //     );
+              //       //   },
+              //       //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+              //       // );
+              //     },
+              //     separatorBuilder: (context, index) => const SizedBox(),
+              //     itemCount: 1);
+
+              // sampe sini
+
+              // return StaggeredGridView.countBuilder(
+              //   shrinkWrap: true,
+              //   crossAxisCount: 2,
+              //   itemBuilder: (context, index) {
+              //     return Container(
+              //       height: 10,
+              //       width: 10,
+              //       color: Colors.red,
+              //     );
+              //   },
+              //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+              // );
+            } else {
+              return const Text("Tidak ada barang");
+            }
+          },
+        )
       ],
     );
   }
@@ -256,6 +359,22 @@ class _TransaksiPageState extends State<TransaksiPage> {
             if (snapshot.connectionState == ConnectionState.done &&
                 snapshot.data != null) {
               final transaksis = snapshot.data ?? [];
+              // ngakalin id terakhir
+              List data = transaksis.map(
+                (e) {
+                  // barangGet.add('${e.namaBarang}');
+                  // jenisGet.add(int.parse(e.idJenis.toString()));
+                  idTerakhir = int.parse(e.idTransaksi.toString());
+                  // idGet.add(int.parse(e.idJenis.toString()));
+                  // // jenisGet.add('${e.idJenis}, ${e.jenisBarang}');
+                  // jenisGet.add('${e.jenisBarang}');
+
+                  // idJenis.add(int.parse(e.idJenis.toString()));
+                },
+              ).toList(); //
+
+              print(idTerakhir);
+
               return Padding(
                 padding:
                     const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 40),
@@ -529,7 +648,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
         child: Center(
             child: InkWell(
           onTap: () {
-            showDialogAdd(idTerakhir + 1, namaBarang);
+            showDialogAdd(idTerakhir + 1, namaBarang, jenisBarang);
           },
           child: Container(
             height: 40,

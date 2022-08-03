@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -5,9 +6,11 @@ import 'package:test_qtasnim/services/transaksi_repo.dart';
 import 'package:test_qtasnim/utils/theme.dart';
 
 class TransaksiDialogAdd extends StatefulWidget {
-  final List a;
+  final List barang;
+  final List jenis;
   final int id;
-  const TransaksiDialogAdd({Key? key, required this.id, required this.a})
+  const TransaksiDialogAdd(
+      {Key? key, required this.id, required this.barang, required this.jenis})
       : super(key: key);
 
   @override
@@ -20,6 +23,7 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
   final TextEditingController jumlahTerjual = TextEditingController();
   late TextEditingController tanggal = TextEditingController();
   DateTime currentDate = DateTime.now();
+  String? selectedValue;
 
   @override
   void initState() {
@@ -44,9 +48,9 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
         currentDate = pickedDate;
         var str = currentDate.toString();
         var arr = str.split(' ');
-        print(arr[0]);
+        // print(arr[0]);
         tanggal = TextEditingController(text: arr[0]);
-        print(currentDate);
+        // print(currentDate);
       });
   }
 
@@ -62,19 +66,69 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
               SizedBox(height: 12),
-              TextFormField(
-                keyboardType: TextInputType.text,
-                controller: namaBarang,
-                decoration: InputDecoration(
-                    hintText: 'Contoh : Teh', labelText: 'Nama Barang'),
-                validator: (value) {
-                  if (value!.isNotEmpty) {
-                    return null;
-                  } else {
-                    return "Harus diisi";
-                  }
+              DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                isExpanded: true,
+                hint: Row(
+                  children: const [
+                    Icon(
+                      Icons.list,
+                      size: 16,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Pilih Barang',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                items: widget.barang
+                    .map((item) => DropdownMenuItem<String>(
+                          value: item,
+                          child: Text(
+                            item,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ))
+                    .toList(),
+                value: selectedValue,
+                onChanged: (value) {
+                  setState(() {
+                    selectedValue = value as String;
+                    // print(selectedValue);
+                    // print(widget.barang.indexOf('$selectedValue'));
+                  });
                 },
-              ),
+              )),
+              // TextFormField(
+              //   keyboardType: TextInputType.text,
+              //   controller: namaBarang,
+              //   decoration: InputDecoration(
+              //       hintText: 'Contoh : Teh', labelText: 'Nama Barang'),
+              //   validator: (value) {
+              //     if (value!.isNotEmpty) {
+              //       return null;
+              //     } else {
+              //       return "Harus diisi";
+              //     }
+              //   },
+              // ),
+
               TextFormField(
                 keyboardType: TextInputType.number,
                 controller: jumlahTerjual,
@@ -112,7 +166,7 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
                   IconButton(
                     onPressed: () {
                       _selectDate(context);
-                      print(currentDate);
+                      // print(currentDate);
                       // tanggal = currentDate.toString();
                     },
                     icon: Icon(Icons.date_range_outlined),
@@ -128,17 +182,19 @@ class _TransaksiDialogAddState extends State<TransaksiDialogAdd> {
           onTap: (() {
             if (_formKey.currentState!.validate()) {
               // putStatusKontrolAuto(1, index);
-              int id_transaksi = widget.id + 1;
 
-              String nama_barang = namaBarang.text.toString();
+              String nama_barang = selectedValue.toString();
               int jumlah_terjual = int.parse(jumlahTerjual.text.toString());
               String tanggal = currentDate.toString();
               List<String> tanggalSplit = tanggal.split(' ');
               String tanggal_transaksi = '${tanggalSplit[0]}';
-              print(tanggal_transaksi);
+              // print(tanggal_transaksi);
+              int id_jenis = widget.jenis
+                  .elementAt(widget.barang.indexOf('$selectedValue'));
               // putStatusKontrolParameter("$parameter", index);
-              TransaksiRepo.addTransaksi(
-                  widget.id, nama_barang, jumlah_terjual, tanggal_transaksi);
+              // print(id_jenis);
+              TransaksiRepo.addTransaksi(widget.id, nama_barang, id_jenis,
+                  jumlah_terjual, tanggal_transaksi);
 
               Navigator.of(context).pop();
             }

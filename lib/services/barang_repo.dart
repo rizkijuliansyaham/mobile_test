@@ -32,7 +32,7 @@ class BarangRepo {
       final response = await http.Client().get(Uri.parse(requestUrl));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body); // as Map<String, dynamic>;
-        print(json);
+        // print(json);
         // final data = TransaksiModel.fromJson(json);
         // print(data);
         final data = json as List<dynamic>;
