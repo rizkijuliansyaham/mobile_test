@@ -26,7 +26,7 @@ class _BottomBarState extends State<BottomBar> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconBottomBar(
-                          text: "Barang",
+                          text: "Summary",
                           icon: Icons.list_alt_outlined,
                           selected: _selectedIndex == 0,
                           onPressed: () {

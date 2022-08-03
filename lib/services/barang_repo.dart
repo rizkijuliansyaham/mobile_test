@@ -70,4 +70,40 @@ class BarangRepo {
 
     return jsonObject;
   }
+
+  static Future<dynamic> deleteBarang(String nama_barang) async {
+    String apiURL = '${DataUrl.baseUrl}Barang/delete/$nama_barang';
+
+    Map<String, String> header = {
+      'Content-type': 'application/json',
+    };
+
+    var apiResult = await http.delete(
+      Uri.parse(apiURL),
+      headers: header,
+    );
+
+    var jsonObject = json.decode(apiResult.body);
+
+    return jsonObject;
+  }
+
+  static Future<dynamic> editStokBarang(int stok, String nama_barang) async {
+    String apiURL = '${DataUrl.baseUrl}Barang/update/$nama_barang';
+
+    Map<String, String> header = {
+      'Content-type': 'application/json',
+    };
+    var body = jsonEncode({'stok': stok});
+
+    var apiResult = await http.post(
+      Uri.parse(apiURL),
+      body: body,
+      headers: header,
+    );
+
+    var jsonObject = json.decode(apiResult.body);
+
+    return jsonObject;
+  }
 }

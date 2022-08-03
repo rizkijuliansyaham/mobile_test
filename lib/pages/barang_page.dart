@@ -26,12 +26,15 @@ class BarangPage extends StatefulWidget {
 
 class _BarangPageState extends State<BarangPage> {
   final TextEditingController searchC = TextEditingController();
+  late StreamController dataTransaksiSearch;
   late Future<List<BarangModel>> _getBarang;
   late Future<List<JenisModel>> _getJenis;
   String kataCari = "";
   int idJenisTerakhir = 0;
   List idJenis = [];
   List namaJenis = [];
+  Timer? _timer;
+  bool isDataLoading = false;
   // late StreamController dataBarang;
   // late StreamController dataJenis;
   // List namaBarang = [];
@@ -46,25 +49,231 @@ class _BarangPageState extends State<BarangPage> {
   void initState() {
     _getBarang = BarangRepo().getBarang();
     _getJenis = JenisRepo().getJenis();
-    kataCari = "";
+    dataTransaksiSearch = new StreamController();
 
     List idJenis = [];
     List namaJenis = [];
 
     // dataBarang = new StreamController();
     // dataJenis = new StreamController();
-    // _timer = Timer.periodic(Duration(milliseconds: 300), (_) {
-    //   // loadDataTransaksi();
-    //   loadDataBarang();
-    //   loadDataJenis();
-    // });
+    _timer = Timer.periodic(Duration(milliseconds: 300), (_) {
+      // loadDataTransaksi();
+      // loadDataBarang();
+      // loadDataJenis();
+      loadDataTransaksiSearch();
+    });
     super.initState();
   }
 
   @override
   void dispose() {
-    // _timer?.cancel();
+    _timer?.cancel();
     super.dispose();
+  }
+
+  Future<void> showDialogEditBarang(int stok, String namaBarang) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return BarangEdit(stok: stok, namaBarang: namaBarang);
+        });
+  }
+
+  Future fetchDataTransaksiSearch() async {
+    try {
+      isDataLoading = true;
+      final response = await http.get(Uri.tryParse(
+          'http://192.168.8.100:5000/search2?search_query=$kataCari')!);
+      if (response.statusCode == 200) {
+        // print(response.body);
+        return json.decode(response.body);
+
+        // final response = await TransaksiRepo.getDataTransaksi();
+        // print(response);
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      isDataLoading = false;
+    }
+    // await TransaksiRepo.getDataTransaksi();
+    // dataTransaksi.addAll(TransaksiRepo.transaksiModel!.);
+  }
+
+  loadDataTransaksiSearch() async {
+    fetchDataTransaksiSearch().then((res) async {
+      dataTransaksiSearch.add(res);
+      return res;
+    });
+  }
+
+  Widget _listTransaksiSearch() {
+    return Column(
+      // physics: ClampingScrollPhysics(),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 15, left: 15),
+          child: Text(
+            "Riwayat Penjualanmu",
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Container(
+            height: 50,
+            width: double.infinity,
+            // color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      "Nama\nBarang",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      "Jumlah\nTerjual",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      "Tanggal",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Text(
+                    "act",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: StreamBuilder<dynamic>(
+              stream: dataTransaksiSearch.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                } else if (snapshot.hasData) {
+                  var jumlahData = snapshot.data!['result'].length;
+                  var data = snapshot.data['result'];
+                  // print(jumlahData);
+
+                  if (jumlahData != 0) {
+                    return Container(
+                      width: double.infinity,
+                      height: 180,
+                      // color: Colors.white,
+                      child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        itemCount: jumlahData,
+                        itemBuilder: (context, index) {
+                          var str = data[index]['tanggal_transaksi'];
+                          var arr = str.split('T');
+                          var tanggal = arr[0].split('-');
+                          var tanggalfix =
+                              '${tanggal[2]}-${tanggal[1]}-${tanggal[0]}';
+
+                          // print(idBelakang);
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8.0, right: 8.0, top: 4, bottom: 4),
+                            child: Container(
+                              height: 50,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 15.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Expanded(
+                                        flex: 1,
+                                        child:
+                                            Text(data[index]['nama_barang'])),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(data[index]['jumlah_terjual']
+                                          .toString()),
+                                    ),
+                                    Expanded(flex: 1, child: Text(tanggalfix)),
+                                    IconButton(
+                                        onPressed: () {
+                                          // deleteDataTransaksi(
+                                          //     data[index]['id_transaksi']);
+                                          showDialogDelete(
+                                              context,
+                                              "Apakah Anda yakin ingin menghapus data ini?",
+                                              data[index]['id_transaksi']);
+                                        },
+                                        icon: Icon(
+                                          Icons.delete,
+                                          size: 18,
+                                          color: Colors.red,
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Transaksi yang dicari tidak ada"),
+                        ],
+                      ),
+                    );
+                  }
+                } else if (snapshot.connectionState != ConnectionState.done) {
+                  return Container(
+                    height: 200,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else if (!snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
+                  return Expanded(child: Center(child: Text('Tidak Ada Data')));
+                } else {
+                  return Expanded(child: Center(child: Text('Tidak Ada Data')));
+                }
+              }),
+        ),
+        SizedBox(
+          height: 70,
+        ),
+      ],
+    );
   }
 
   Future<void> showDialogAddJenis(
@@ -138,6 +347,71 @@ class _BarangPageState extends State<BarangPage> {
         context: context,
         builder: (context) {
           return BarangDialogAdd(nama: namaJenis, idJenis: idJenis);
+        });
+  }
+
+  void deleteDataBarang(String nama) async {
+    var delete = await BarangRepo.deleteBarang(nama);
+  }
+
+  Future<void> showDialogDeleteBarang(
+      BuildContext context, String pesan, String nama) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(pesan,
+                    style: TextStyle(
+                      color: Colors.red,
+                    )),
+              ],
+            ),
+            actions: [
+              InkWell(
+                onTap: (() {
+                  Navigator.of(context).pop();
+                }),
+                child: Container(
+                  height: 40,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: Colors.red, width: 0.4)),
+                  child: Center(
+                    child: Text(
+                      "Tidak",
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: (() {
+                  BarangRepo.deleteBarang(nama);
+                  Navigator.of(context).pop();
+                }),
+                child: Container(
+                  height: 40,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(4)),
+                  child: Center(
+                    child: Text(
+                      "Ya",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
         });
   }
 
@@ -215,7 +489,8 @@ class _BarangPageState extends State<BarangPage> {
               Visibility(visible: kataCari == "", child: _jenis()),
               Visibility(visible: kataCari == "", child: _tambahBarang()),
               Visibility(visible: kataCari == "", child: _listBarang()),
-              Visibility(visible: kataCari != "", child: _searchValue()),
+              Visibility(
+                  visible: kataCari != null, child: _listTransaksiSearch()),
 
               // Container(
               //   height: 450,
@@ -546,9 +821,15 @@ class _BarangPageState extends State<BarangPage> {
                     Flexible(
                       child: TextField(
                         controller: searchC,
+
                         onChanged: (value) {
                           setState(() {
-                            kataCari = searchC.text;
+                            if (searchC.text != null) {
+                              kataCari = searchC.text;
+                              print(kataCari);
+                            } else {
+                              kataCari = "undef";
+                            }
                           });
                         },
                         onSubmitted: ((value) {
@@ -559,7 +840,7 @@ class _BarangPageState extends State<BarangPage> {
                         // controller: searchC,
                         textInputAction: TextInputAction.search,
                         decoration: const InputDecoration(
-                          hintText: 'Searching',
+                          hintText: 'Cari Data Transaksi',
                           border: InputBorder.none,
                         ),
                       ),
@@ -676,7 +957,7 @@ class _BarangPageState extends State<BarangPage> {
                                                     onTap: () {
                                                       showDialogDelete(
                                                           context,
-                                                          "Menghapus data jenis akan berpengaruh kepada perubahan seluruh jenis barang yang terhubung ke kategori 'Lain-lain' Apakah Anda yakin ingin menghapus ${item.jenisBarang.toString()}?",
+                                                          "Menghapus data jenis akan berpengaruh kepada perubahan seluruh jenis barang yang terhubung akan dipindahkan ke kategori 'Lain-lain' Apakah Anda yakin ingin menghapus ${item.jenisBarang.toString()}?",
                                                           int.parse(item.idJenis
                                                               .toString()));
                                                       // JenisRepo.deleteTransaksi(
@@ -716,7 +997,12 @@ class _BarangPageState extends State<BarangPage> {
                                 ))
                             .toList());
                   } else {
-                    return Container();
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Tidak ada data jenis barang"),
+                      ],
+                    );
                   }
                 },
               ),
@@ -844,21 +1130,33 @@ class _BarangPageState extends State<BarangPage> {
                     return Column(
                       children: barang
                           .map((barangs) => GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  showDialogEditBarang(
+                                      int.parse(barangs.stok.toString()),
+                                      barangs.namaBarang.toString());
+                                },
                                 child: Stack(
                                   children: [
-                                    const Padding(
+                                    BarangCard(barang: barangs),
+                                    Padding(
                                       padding:
                                           EdgeInsets.only(right: 22, top: 6),
-                                      child: const Align(
+                                      child: Align(
                                         alignment: Alignment.topRight,
-                                        child: Icon(
-                                          Icons.remove_circle_outline,
-                                          color: Colors.red,
+                                        child: InkWell(
+                                          onTap: () {
+                                            showDialogDeleteBarang(
+                                                context,
+                                                "Apakah yakin akan menghapus data ${barangs.namaBarang.toString()}?",
+                                                barangs.namaBarang.toString());
+                                          },
+                                          child: Icon(
+                                            Icons.remove_circle_outline,
+                                            color: Colors.red,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    BarangCard(barang: barangs),
                                   ],
                                 ),
                               ))
@@ -892,7 +1190,15 @@ class _BarangPageState extends State<BarangPage> {
               //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
               // );
             } else {
-              return const Text("Tidak ada barang");
+              return Padding(
+                padding: const EdgeInsets.only(top: 18.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Tidak ada barang"),
+                  ],
+                ),
+              );
             }
           },
         )

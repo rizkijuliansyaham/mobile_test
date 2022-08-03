@@ -33,6 +33,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
   // List dataTransaksi = [];
   final _formKey = GlobalKey<FormState>();
   late StreamController dataTransaksi;
+
   // late StreamController dataBarang;
   List namaBarang = [];
   List jenisBarang = [];
@@ -202,6 +203,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
         //TODO: Tinggal ubah uncoment untuk mengubah model jenis data list future atau stream
         // _listTransaksi(),
 
+// TODO: pilih salah satu _list saja
         Padding(
           padding: const EdgeInsets.only(top: 200),
           child: _listTransaksiStream(),
@@ -243,7 +245,15 @@ class _TransaksiPageState extends State<TransaksiPage> {
               jenisBarang = jenisGet;
               return Container();
             } else {
-              return const Text("Tidak ada barang");
+              return Padding(
+                padding: const EdgeInsets.only(top: 208.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(""),
+                  ],
+                ),
+              );
             }
           },
         )
@@ -252,44 +262,46 @@ class _TransaksiPageState extends State<TransaksiPage> {
   }
 
   Widget _search() {
-    return Container(
-      height: 50,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-          color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Row(
-          children: [
-            Icon(
-              Icons.search_rounded,
-              color: Colors.grey[500],
-            ),
-            SizedBox(
-              width: 12,
-            ),
-            Flexible(
-              child: TextField(
-                controller: searchC,
-                onChanged: (value) {
-                  setState(() {
-                    kataCari = searchC.text;
-                  });
-                },
-                onSubmitted: ((value) {
-                  setState(() {
-                    // kataCari = searchC.text;
-                  });
-                }),
-                // controller: searchC,
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  hintText: 'Searching',
-                  border: InputBorder.none,
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Container(
+        height: 40,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              Icon(
+                Icons.search_rounded,
+                color: Colors.grey[500],
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              Flexible(
+                child: TextField(
+                  controller: searchC,
+                  onChanged: (value) {
+                    setState(() {
+                      kataCari = searchC.text;
+                    });
+                  },
+                  onSubmitted: ((value) {
+                    setState(() {
+                      kataCari = searchC.text;
+                    });
+                  }),
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    hintText: 'Cari Data Transaksi',
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -647,10 +659,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
                           fontWeight: FontWeight.bold),
                     ),
                   ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: _search(),
                 ),
               ],
             ),

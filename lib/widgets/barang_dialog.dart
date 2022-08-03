@@ -165,3 +165,90 @@ class _BarangDialogAddState extends State<BarangDialogAdd> {
     );
   }
 }
+
+class BarangEdit extends StatelessWidget {
+  final String namaBarang;
+  final int stok;
+  const BarangEdit({Key? key, required this.stok, required this.namaBarang})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    final TextEditingController stokBaru = TextEditingController();
+    final TextEditingController stokLama =
+        TextEditingController(text: stok.toString());
+
+    return AlertDialog(
+      content: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Edit Stok $namaBarang",
+                  style: TextStyle(
+                      color: BaseTheme.color, fontWeight: FontWeight.bold)),
+              SizedBox(height: 12),
+              TextFormField(
+                enabled: false,
+                // keyboardType: TextInputType.number,
+                controller: stokLama,
+                decoration: InputDecoration(
+                    hintText: 'Contoh : 12', labelText: 'Stok Lama'),
+              ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                controller: stokBaru,
+                decoration: InputDecoration(
+                    hintText: 'Contoh : 12', labelText: 'Stok Baru'),
+                validator: (value) {
+                  if (value!.isNotEmpty) {
+                    return null;
+                  } else {
+                    return "Harus diisi";
+                  }
+                },
+              ),
+              SizedBox(
+                height: 12,
+              ),
+            ],
+          )),
+      actions: [
+        InkWell(
+          onTap: (() {
+            if (_formKey.currentState!.validate()) {
+              int stok_baru = int.parse(stokBaru.text.toString());
+              // String nama_barang = namaBarang.text.toString();
+              // int stokAwal = int.parse(stok.text.toString());
+              // int idJenisTerpilih = widget.idJenis
+              //     .elementAt(widget.nama.indexOf('$selectedValue'));
+              BarangRepo.editStokBarang(stok_baru, namaBarang);
+
+              // BarangRepo.addBarang(nama_barang, stokAwal, idJenisTerpilih);
+
+              // putStatusKontrolParameter("$parameter", index);
+              // TransaksiRepo.addTransaksi(
+              //     id, nama_barang, jumlah_terjual, tanggal_transaksi);
+
+              Navigator.of(context).pop();
+            }
+          }),
+          child: Container(
+            height: 40,
+            width: 100,
+            decoration: BoxDecoration(
+                color: BaseTheme.color, borderRadius: BorderRadius.circular(4)),
+            child: Center(
+              child: Text(
+                "Update",
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
