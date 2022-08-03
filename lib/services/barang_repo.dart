@@ -52,7 +52,7 @@ class BarangRepo {
 
   static Future<dynamic> addBarang(
       String nama_barang, int stok, int id_jenis) async {
-    String apiURL = 'http://192.168.8.100:5000/Transaksi/create';
+    String apiURL = '${DataUrl.baseUrl}Transaksi/create';
 
     Map<String, String> header = {
       'Content-type': 'application/json',

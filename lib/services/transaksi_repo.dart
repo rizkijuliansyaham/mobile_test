@@ -33,27 +33,8 @@ class TransaksiRepo {
     }
   }
 
-  // static getDataTransaksi() async {
-  //   try {
-  //     String apiURL = 'http://192.168.8.100:5000/Transaksi';
-
-  //     var apiResult = await http.get(Uri.parse(apiURL));
-
-  //     if (apiResult.statusCode == 200) {
-  //       /// successfully get data
-  //       var jsonObject = json.decode(apiResult.body);
-  //       // transaksiModel = TransaksiModel.fromJson(jsonObject);
-  //     } else {
-  //       /// failure get data
-  //       print(apiResult.statusCode);
-  //     }
-  //   } catch (error) {
-  //     print(error);
-  //   }
-  // }
-
   static Future<dynamic> deleteTransaksi(int idTransaksi) async {
-    String apiURL = 'http://192.168.8.100:5000/Transaksi/delete/$idTransaksi';
+    String apiURL = '${DataUrl.baseUrl}Transaksi/delete/$idTransaksi';
 
     Map<String, String> header = {
       'Content-type': 'application/json',
@@ -71,7 +52,7 @@ class TransaksiRepo {
 
   static Future<dynamic> addTransaksi(
       int id, String nama_barang, int jumlah_terjual, String tanggal) async {
-    String apiURL = 'http://192.168.8.100:5000/Transaksi/create';
+    String apiURL = '${DataUrl.baseUrl}Transaksi/create';
 
     Map<String, String> header = {
       'Content-type': 'application/json',

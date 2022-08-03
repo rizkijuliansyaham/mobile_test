@@ -15,6 +15,7 @@ import 'package:test_qtasnim/utils/theme.dart';
 import 'package:test_qtasnim/widgets/barang_card.dart';
 import 'package:test_qtasnim/widgets/barang_dialog.dart';
 import 'package:test_qtasnim/widgets/jenis_card.dart';
+import 'package:test_qtasnim/widgets/jenis_dialog.dart';
 
 class BarangPage extends StatefulWidget {
   const BarangPage({Key? key}) : super(key: key);
@@ -28,6 +29,7 @@ class _BarangPageState extends State<BarangPage> {
   late Future<List<BarangModel>> _getBarang;
   late Future<List<JenisModel>> _getJenis;
   String kataCari = "";
+  int idJenisTerakhir = 0;
   // late StreamController dataBarang;
   // late StreamController dataJenis;
   // List namaBarang = [];
@@ -43,6 +45,8 @@ class _BarangPageState extends State<BarangPage> {
     _getBarang = BarangRepo().getTransaksi();
     _getJenis = JenisRepo().getJenis();
     kataCari = "";
+
+    List id = [];
 
     // dataBarang = new StreamController();
     // dataJenis = new StreamController();
@@ -60,6 +64,15 @@ class _BarangPageState extends State<BarangPage> {
     super.dispose();
   }
 
+  Future<void> showDialogAddJenis(int id) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          // return TransaksiDialogAdd(id: id, a: barang);
+          // return Container();
+          return AddJenis(id: id);
+        });
+  }
   // Future fetchDataBarang() async {
   //   try {
   //     isDataLoading = true;
@@ -132,89 +145,9 @@ class _BarangPageState extends State<BarangPage> {
           children: [
             _header(),
             Visibility(visible: kataCari == "", child: _jenis()),
-            _tambahBarang(),
-
-            Padding(
-              padding: const EdgeInsets.only(top: 15, left: 15),
-              child: Text(
-                "Barang yang kamu punya",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-
-            FutureBuilder<List<BarangModel>>(
-              future: _getBarang,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.data != null) {
-                  final barang = snapshot.data ?? [];
-
-                  return ListView.separated(
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        // return BarangCard(barang: barang);
-                        return Column(
-                          children: barang
-                              .map((barangs) => GestureDetector(
-                                    onTap: () {},
-                                    child: Stack(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 22, top: 6),
-                                          child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Icon(
-                                              Icons.remove_circle_outline,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        ),
-                                        BarangCard(barang: barangs),
-                                      ],
-                                    ),
-                                  ))
-                              .toList(),
-                        );
-                        // return StaggeredGridView.countBuilder(
-                        //   crossAxisCount: 2,
-                        //   itemBuilder: (context, index) {
-                        //     return Container(
-                        //       height: 10,
-                        //       width: 10,
-                        //       color: Colors.red,
-                        //     );
-                        //   },
-                        //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-                        // );
-                      },
-                      separatorBuilder: (context, index) => SizedBox(),
-                      itemCount: 1);
-
-                  // return StaggeredGridView.countBuilder(
-                  //   shrinkWrap: true,
-                  //   crossAxisCount: 2,
-                  //   itemBuilder: (context, index) {
-                  //     return Container(
-                  //       height: 10,
-                  //       width: 10,
-                  //       color: Colors.red,
-                  //     );
-                  //   },
-                  //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-                  // );
-                } else {
-                  return Text("Tidak ada barang");
-                }
-              },
-            )
+            Visibility(visible: kataCari == "", child: _tambahBarang()),
+            Visibility(visible: kataCari == "", child: _listBarang()),
+            Visibility(visible: kataCari != "", child: _searchValue()),
 
             // Container(
             //   height: 450,
@@ -579,12 +512,17 @@ class _BarangPageState extends State<BarangPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                InkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 15.0),
-                      child: Icon(Icons.add_circle_outline),
-                    ))
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: InkWell(
+                      onTap: () {
+                        showDialogAddJenis(idJenisTerakhir + 1);
+                        setState(() {
+                          _getJenis = JenisRepo().getJenis();
+                        });
+                      },
+                      child: Icon(Icons.add_circle_outline)),
+                )
               ],
             ),
           ),
@@ -603,6 +541,14 @@ class _BarangPageState extends State<BarangPage> {
                   if (snapshot.connectionState == ConnectionState.done &&
                       snapshot.data != null) {
                     final jenis = snapshot.data ?? [];
+                    int idBelakang = 0;
+                    List data = jenis.map(
+                      (e) {
+                        idBelakang = int.parse(e.idJenis.toString());
+                      },
+                    ).toList(); // Ngakalin get id terakhir karena backend belum set auto fill id
+                    // print(data);
+                    idJenisTerakhir = idBelakang;
                     return ListView(
                         scrollDirection: Axis.horizontal,
                         children: jenis
@@ -703,6 +649,164 @@ class _BarangPageState extends State<BarangPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _listBarang() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 15, left: 15),
+          child: Text(
+            "Barang yang kamu punya",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 12,
+        ),
+        FutureBuilder<List<BarangModel>>(
+          future: _getBarang,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.data != null) {
+              final barang = snapshot.data ?? [];
+
+              return ListView.separated(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    // return BarangCard(barang: barang);
+                    return Column(
+                      children: barang
+                          .map((barangs) => GestureDetector(
+                                onTap: () {},
+                                child: Stack(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 22, top: 6),
+                                      child: Align(
+                                        alignment: Alignment.topRight,
+                                        child: Icon(
+                                          Icons.remove_circle_outline,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                    BarangCard(barang: barangs),
+                                  ],
+                                ),
+                              ))
+                          .toList(),
+                    );
+                    // return StaggeredGridView.countBuilder(
+                    //   crossAxisCount: 2,
+                    //   itemBuilder: (context, index) {
+                    //     return Container(
+                    //       height: 10,
+                    //       width: 10,
+                    //       color: Colors.red,
+                    //     );
+                    //   },
+                    //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+                    // );
+                  },
+                  separatorBuilder: (context, index) => SizedBox(),
+                  itemCount: 1);
+
+              // return StaggeredGridView.countBuilder(
+              //   shrinkWrap: true,
+              //   crossAxisCount: 2,
+              //   itemBuilder: (context, index) {
+              //     return Container(
+              //       height: 10,
+              //       width: 10,
+              //       color: Colors.red,
+              //     );
+              //   },
+              //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+              // );
+            } else {
+              return Text("Tidak ada barang");
+            }
+          },
+        )
+      ],
+    );
+  }
+
+  Widget _searchValue() {
+    return FutureBuilder<List<BarangModel>>(
+      future: _getBarang,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.data != null) {
+          final barang = snapshot.data ?? [];
+
+          return ListView.separated(
+              physics: ScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                // return BarangCard(barang: barang);
+                return Column(
+                  children: barang
+                      .map((barangs) => GestureDetector(
+                            onTap: () {},
+                            child: Stack(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(right: 22, top: 6),
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: Icon(
+                                      Icons.remove_circle_outline,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                                BarangCard(barang: barangs),
+                              ],
+                            ),
+                          ))
+                      .toList(),
+                );
+                // return StaggeredGridView.countBuilder(
+                //   crossAxisCount: 2,
+                //   itemBuilder: (context, index) {
+                //     return Container(
+                //       height: 10,
+                //       width: 10,
+                //       color: Colors.red,
+                //     );
+                //   },
+                //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+                // );
+              },
+              separatorBuilder: (context, index) => SizedBox(),
+              itemCount: 1);
+
+          // return StaggeredGridView.countBuilder(
+          //   shrinkWrap: true,
+          //   crossAxisCount: 2,
+          //   itemBuilder: (context, index) {
+          //     return Container(
+          //       height: 10,
+          //       width: 10,
+          //       color: Colors.red,
+          //     );
+          //   },
+          //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+          // );
+        } else {
+          return Text("Tidak ada barang");
+        }
+      },
     );
   }
 }

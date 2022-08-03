@@ -30,4 +30,23 @@ class JenisRepo {
       throw DataError(message: e.toString());
     }
   }
+
+  static Future<dynamic> addJenis(int id_jenis, String jenis_barang) async {
+    String apiURL = '${DataUrl.baseUrl}Jenis/create';
+
+    Map<String, String> header = {
+      'Content-type': 'application/json',
+    };
+    var body = jsonEncode({'id_jenis': id_jenis, 'jenis_barang': jenis_barang});
+
+    var apiResult = await http.post(
+      Uri.parse(apiURL),
+      body: body,
+      headers: header,
+    );
+
+    var jsonObject = json.decode(apiResult.body);
+
+    return jsonObject;
+  }
 }
