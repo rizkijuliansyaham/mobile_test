@@ -1,17 +1,17 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:test_qtasnim/models/barang.dart';
 import 'package:test_qtasnim/models/jenis.dart';
 import 'package:test_qtasnim/services/barang_repo.dart';
 import 'package:test_qtasnim/services/jenis_repo.dart';
 import 'package:test_qtasnim/utils/theme.dart';
+import 'package:test_qtasnim/utils/url_data.dart';
 import 'package:test_qtasnim/widgets/barang_card.dart';
 import 'package:test_qtasnim/widgets/barang_dialog.dart';
 import 'package:test_qtasnim/widgets/jenis_card.dart';
@@ -49,14 +49,11 @@ class _BarangPageState extends State<BarangPage> {
   void initState() {
     _getBarang = BarangRepo().getBarang();
     _getJenis = JenisRepo().getJenis();
-    dataTransaksiSearch = new StreamController();
-
-    List idJenis = [];
-    List namaJenis = [];
+    dataTransaksiSearch = StreamController();
 
     // dataBarang = new StreamController();
     // dataJenis = new StreamController();
-    _timer = Timer.periodic(Duration(milliseconds: 300), (_) {
+    _timer = Timer.periodic(const Duration(milliseconds: 300), (_) {
       // loadDataTransaksi();
       // loadDataBarang();
       // loadDataJenis();
@@ -82,8 +79,8 @@ class _BarangPageState extends State<BarangPage> {
   Future fetchDataTransaksiSearch() async {
     try {
       isDataLoading = true;
-      final response = await http.get(Uri.tryParse(
-          'http://192.168.8.100:5000/search2?search_query=$kataCari')!);
+      final response = await http.get(
+          Uri.tryParse('${DataUrl.baseUrl}search2?search_query=$kataCari')!);
       if (response.statusCode == 200) {
         // print(response.body);
         return json.decode(response.body);
@@ -118,18 +115,18 @@ class _BarangPageState extends State<BarangPage> {
           padding: EdgeInsets.only(top: 30, left: 15),
           child: Text(
             "Riwayat Penjualanmu",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Container(
+          child: SizedBox(
             height: 50,
             width: double.infinity,
             // color: Colors.white,
@@ -137,28 +134,29 @@ class _BarangPageState extends State<BarangPage> {
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+                // ignore: prefer_const_literals_to_create_immutables
                 children: [
-                  Expanded(
+                  const Expanded(
                     flex: 1,
                     child: Text(
                       "Nama\nBarang",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Expanded(
+                  const Expanded(
                     flex: 1,
                     child: Text(
                       "Jumlah\nTerjual",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Expanded(
+                  const Expanded(
                     child: Text(
                       "Tanggal",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Text(
+                  const Text(
                     "act",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -180,12 +178,12 @@ class _BarangPageState extends State<BarangPage> {
                   // print(jumlahData);
 
                   if (jumlahData != 0) {
-                    return Container(
+                    return SizedBox(
                       width: double.infinity,
                       height: 180,
                       // color: Colors.white,
                       child: ListView.builder(
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         itemCount: jumlahData,
                         itemBuilder: (context, index) {
                           var str = data[index]['tanggal_transaksi'];
@@ -230,7 +228,7 @@ class _BarangPageState extends State<BarangPage> {
                                               "Apakah Anda yakin ingin menghapus data ini?",
                                               data[index]['id_transaksi']);
                                         },
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.delete,
                                           size: 18,
                                           color: Colors.red,
@@ -248,14 +246,15 @@ class _BarangPageState extends State<BarangPage> {
                       padding: const EdgeInsets.only(top: 20.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        // ignore: prefer_const_literals_to_create_immutables
                         children: [
-                          Text("Transaksi yang dicari tidak ada"),
+                          const Text("Transaksi yang dicari tidak ada"),
                         ],
                       ),
                     );
                   }
                 } else if (snapshot.connectionState != ConnectionState.done) {
-                  return Container(
+                  return const SizedBox(
                     height: 200,
                     child: Center(
                       child: CircularProgressIndicator(),
@@ -263,13 +262,15 @@ class _BarangPageState extends State<BarangPage> {
                   );
                 } else if (!snapshot.hasData &&
                     snapshot.connectionState == ConnectionState.done) {
-                  return Expanded(child: Center(child: Text('Tidak Ada Data')));
+                  return const Expanded(
+                      child: Center(child: Text('Tidak Ada Data')));
                 } else {
-                  return Expanded(child: Center(child: Text('Tidak Ada Data')));
+                  return const Expanded(
+                      child: Center(child: Text('Tidak Ada Data')));
                 }
               }),
         ),
-        SizedBox(
+        const SizedBox(
           height: 70,
         ),
       ],
@@ -364,7 +365,7 @@ class _BarangPageState extends State<BarangPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(pesan,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.red,
                     )),
               ],
@@ -381,7 +382,7 @@ class _BarangPageState extends State<BarangPage> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(color: Colors.red, width: 0.4)),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       "Tidak",
                       style: TextStyle(
@@ -401,7 +402,7 @@ class _BarangPageState extends State<BarangPage> {
                   decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(4)),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       "Ya",
                       style: TextStyle(
@@ -425,7 +426,7 @@ class _BarangPageState extends State<BarangPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(pesan,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.red,
                     )),
               ],
@@ -442,7 +443,7 @@ class _BarangPageState extends State<BarangPage> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(color: Colors.red, width: 0.4)),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       "Tidak",
                       style: TextStyle(
@@ -462,7 +463,7 @@ class _BarangPageState extends State<BarangPage> {
                   decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(4)),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       "Ya",
                       style: TextStyle(
@@ -778,7 +779,7 @@ class _BarangPageState extends State<BarangPage> {
   // }
 
   Widget _header() {
-    return Container(
+    return SizedBox(
       height: 160,
       width: MediaQuery.of(context).size.width,
       // color: Colors.red,
@@ -793,7 +794,7 @@ class _BarangPageState extends State<BarangPage> {
             const Text("Halo,"),
             const Text(
               "Pengguna",
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
@@ -824,6 +825,7 @@ class _BarangPageState extends State<BarangPage> {
 
                         onChanged: (value) {
                           setState(() {
+                            // ignore: unnecessary_null_comparison
                             if (searchC.text != null) {
                               kataCari = searchC.text;
                               print(kataCari);
@@ -856,7 +858,7 @@ class _BarangPageState extends State<BarangPage> {
   }
 
   Widget _jenis() {
-    return Container(
+    return SizedBox(
       height: 150,
       width: MediaQuery.of(context).size.width,
       // color: Colors.blue,
@@ -870,7 +872,7 @@ class _BarangPageState extends State<BarangPage> {
               children: [
                 const Text(
                   "Jenis Barang",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -889,7 +891,7 @@ class _BarangPageState extends State<BarangPage> {
           const SizedBox(
             height: 5,
           ),
-          Container(
+          SizedBox(
             height: 90,
             width: MediaQuery.of(context).size.width,
             // color: Colors.black,
@@ -964,7 +966,7 @@ class _BarangPageState extends State<BarangPage> {
                                                       //     int.parse(item.idJenis
                                                       //         .toString()));
                                                     },
-                                                    child: Icon(
+                                                    child: const Icon(
                                                       Icons.delete_outline,
                                                       color: Colors.red,
                                                     ),
@@ -999,8 +1001,8 @@ class _BarangPageState extends State<BarangPage> {
                   } else {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Tidak ada data jenis barang"),
+                      children: const [
+                        Text("Tidak ada data jenis barang"),
                       ],
                     );
                   }
@@ -1086,7 +1088,7 @@ class _BarangPageState extends State<BarangPage> {
                       showDialogAddBarang(namaJenis, idJenis);
                     },
                     child: const Text("Tambah",
-                        style: const TextStyle(
+                        style: TextStyle(
                             decoration: TextDecoration.underline,
                             fontSize: 22,
                             fontWeight: FontWeight.bold))),
@@ -1106,7 +1108,7 @@ class _BarangPageState extends State<BarangPage> {
           padding: EdgeInsets.only(top: 15, left: 15),
           child: Text(
             "Barang yang kamu punya",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -1139,8 +1141,8 @@ class _BarangPageState extends State<BarangPage> {
                                   children: [
                                     BarangCard(barang: barangs),
                                     Padding(
-                                      padding:
-                                          EdgeInsets.only(right: 22, top: 6),
+                                      padding: const EdgeInsets.only(
+                                          right: 22, top: 6),
                                       child: Align(
                                         alignment: Alignment.topRight,
                                         child: InkWell(
@@ -1150,7 +1152,7 @@ class _BarangPageState extends State<BarangPage> {
                                                 "Apakah yakin akan menghapus data ${barangs.namaBarang.toString()}?",
                                                 barangs.namaBarang.toString());
                                           },
-                                          child: Icon(
+                                          child: const Icon(
                                             Icons.remove_circle_outline,
                                             color: Colors.red,
                                           ),
@@ -1194,8 +1196,8 @@ class _BarangPageState extends State<BarangPage> {
                 padding: const EdgeInsets.only(top: 18.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Tidak ada barang"),
+                  children: const [
+                    Text("Tidak ada barang"),
                   ],
                 ),
               );
