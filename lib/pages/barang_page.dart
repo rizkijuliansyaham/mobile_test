@@ -115,7 +115,7 @@ class _BarangPageState extends State<BarangPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.only(top: 15, left: 15),
+          padding: EdgeInsets.only(top: 30, left: 15),
           child: Text(
             "Riwayat Penjualanmu",
             style: const TextStyle(
