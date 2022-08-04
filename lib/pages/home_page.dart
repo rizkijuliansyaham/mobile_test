@@ -3,8 +3,6 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:test_qtasnim/models/barang.dart';
 import 'package:test_qtasnim/pages/barang_page.dart';
-import 'package:test_qtasnim/pages/info_page.dart';
-import 'package:test_qtasnim/pages/search_page.dart';
 import 'package:test_qtasnim/pages/report_page.dart';
 import 'package:test_qtasnim/pages/transaksi_page.dart';
 import 'package:test_qtasnim/widgets/bottom_bar.dart';
