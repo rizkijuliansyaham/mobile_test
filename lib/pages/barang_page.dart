@@ -35,15 +35,6 @@ class _BarangPageState extends State<BarangPage> {
   List namaJenis = [];
   Timer? _timer;
   bool isDataLoading = false;
-  // late StreamController dataBarang;
-  // late StreamController dataJenis;
-  // List namaBarang = [];
-  // List namaJenis = [];
-  // List idJenis = [];
-  // List testList = ["satu", "dua"];
-  // bool isDataLoading = false;
-  // Timer? _timer;
-  // final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -51,12 +42,7 @@ class _BarangPageState extends State<BarangPage> {
     _getJenis = JenisRepo().getJenis();
     dataTransaksiSearch = StreamController();
 
-    // dataBarang = new StreamController();
-    // dataJenis = new StreamController();
     _timer = Timer.periodic(const Duration(milliseconds: 300), (_) {
-      // loadDataTransaksi();
-      // loadDataBarang();
-      // loadDataJenis();
       loadDataTransaksiSearch();
     });
     super.initState();
@@ -84,9 +70,6 @@ class _BarangPageState extends State<BarangPage> {
       if (response.statusCode == 200) {
         // print(response.body);
         return json.decode(response.body);
-
-        // final response = await TransaksiRepo.getDataTransaksi();
-        // print(response);
       } else {
         print(response.statusCode);
       }
@@ -95,8 +78,6 @@ class _BarangPageState extends State<BarangPage> {
     } finally {
       isDataLoading = false;
     }
-    // await TransaksiRepo.getDataTransaksi();
-    // dataTransaksi.addAll(TransaksiRepo.transaksiModel!.);
   }
 
   loadDataTransaksiSearch() async {
@@ -108,7 +89,6 @@ class _BarangPageState extends State<BarangPage> {
 
   Widget _listTransaksiSearch() {
     return Column(
-      // physics: ClampingScrollPhysics(),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
@@ -129,7 +109,6 @@ class _BarangPageState extends State<BarangPage> {
           child: SizedBox(
             height: 50,
             width: double.infinity,
-            // color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: Row(
@@ -282,65 +261,9 @@ class _BarangPageState extends State<BarangPage> {
     showDialog(
         context: context,
         builder: (context) {
-          // return TransaksiDialogAdd(id: id, a: barang);
-          // return Container();
-          // return AddJeniss(id: id, getJenis: _getJenis);
           return AddJenis(id: id);
         });
   }
-  // Future fetchDataBarang() async {
-  //   try {
-  //     isDataLoading = true;
-  //     final response =
-  //         await http.get(Uri.tryParse('http://192.168.8.100:5000/Barang')!);
-  //     if (response.statusCode == 200) {
-  //       // print(response.body);
-  //       return json.decode(response.body);
-  //     } else {
-  //       print(response.statusCode);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   } finally {
-  //     isDataLoading = false;
-  //   }
-  //   // await TransaksiRepo.getDataTransaksi();
-  //   // dataTransaksi.addAll(TransaksiRepo.transaksiModel!.);
-  // }
-
-  // loadDataBarang() async {
-  //   fetchDataBarang().then((res) async {
-  //     dataBarang.add(res);
-  //     return res;
-  //   });
-  // }
-
-  // Future fetchDataJenis() async {
-  //   try {
-  //     isDataLoading = true;
-  //     final response =
-  //         await http.get(Uri.tryParse('http://192.168.8.100:5000/Jenis')!);
-  //     if (response.statusCode == 200) {
-  //       // print(response.body);
-  //       return json.decode(response.body);
-  //     } else {
-  //       print(response.statusCode);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   } finally {
-  //     isDataLoading = false;
-  //   }
-  //   // await TransaksiRepo.getDataTransaksi();
-  //   // dataTransaksi.addAll(TransaksiRepo.transaksiModel!.);
-  // }
-
-  // loadDataJenis() async {
-  //   fetchDataJenis().then((res) async {
-  //     dataJenis.add(res);
-  //     return res;
-  //   });
-  // }
 
   Future<void> showDialogAddBarang(
       List<dynamic> namaJenis, List<dynamic> idJenis) async {
@@ -492,28 +415,6 @@ class _BarangPageState extends State<BarangPage> {
               Visibility(visible: kataCari == "", child: _listBarang()),
               Visibility(
                   visible: kataCari != null, child: _listTransaksiSearch()),
-
-              // Container(
-              //   height: 450,
-              //   color: Colors.amber,
-              // ),
-              // ListView.separated(
-              //     itemBuilder: (context, index) {
-              //       return Container();
-              //     },
-              //     separatorBuilder: (context, index) => Divider(),
-              //     itemCount: 3)
-              // StaggeredGridView.countBuilder(
-              //   crossAxisCount: 2,
-              //   itemBuilder: (context, index) {
-              //     return Container(
-              //       height: 10,
-              //       width: 10,
-              //       color: Colors.red,
-              //     );
-              //   },
-              //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-              // )
             ],
           ),
         ),
@@ -532,251 +433,6 @@ class _BarangPageState extends State<BarangPage> {
       ),
     );
   } // coment ini kalau mau mengggunakan layout lama
-
-// TODO: Layout Lama
-  // return ListView(
-  //   children: [
-  //     Expanded(
-  //       flex: 1,
-  //       child: Container(
-  //         width: MediaQuery.of(context).size.width,
-  //         // color: Colors.red,
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             SizedBox(
-  //               height: 20,
-  //             ),
-  //             Padding(
-  //               padding: const EdgeInsets.only(left: 10.0),
-  //               child: Text(
-  //                 "Barang",
-  //                 style: TextStyle(
-  //                   fontSize: 30,
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //               ),
-  //             ),
-  //             SizedBox(
-  //               height: 20,
-  //             ),
-
-  // TODO: Stream Barang
-  //             // StreamBuilder<dynamic>(
-  //             //     stream: dataBarang.stream,
-  //             //     builder: (context, snapshot) {
-  //             //       if (snapshot.hasError) {
-  //             //         return Text(snapshot.error.toString());
-  //             //       } else if (snapshot.hasData) {
-  //             //         var jumlahData = snapshot.data!.length;
-  //             //         var data = snapshot.data;
-  //             //         // List dataNama = [;
-  //             //         // namaBarang.addAll(dataNama);
-  //             //         // print(dataNama);
-  //             //         return Container(
-  //             //             height: 180,
-  //             //             // color: Colors.black,
-  //             //             child: ListView.builder(
-  //             //               physics: BouncingScrollPhysics(),
-  //             //               scrollDirection: Axis.horizontal,
-  //             //               itemCount: jumlahData,
-  //             //               itemBuilder: (context, index) {
-  //             //                 return Padding(
-  //             //                   padding: const EdgeInsets.all(8.0),
-  //             //                   child: Container(
-  //             //                     height: 12,
-  //             //                     width: 140,
-  //             //                     decoration: BoxDecoration(
-  //             //                       color: Colors.grey[200],
-  //             //                       borderRadius: BorderRadius.circular(12),
-  //             //                     ),
-  //             //                     child: Padding(
-  //             //                       padding: const EdgeInsets.all(8.0),
-  //             //                       child: Column(
-  //             //                           crossAxisAlignment:
-  //             //                               CrossAxisAlignment.start,
-  //             //                           mainAxisAlignment:
-  //             //                               MainAxisAlignment.spaceAround,
-  //             //                           children: [
-  //             //                             Text(
-  //             //                               data[index]['nama_barang'],
-  //             //                               style: TextStyle(
-  //             //                                 fontSize: 26,
-  //             //                               ),
-  //             //                             ),
-  //             //                             // SizedBox(
-  //             //                             //   height: 80,
-  //             //                             // ),
-  //             //                             Text(
-  //             //                                 "Stok : ${data[index]['stok']}"),
-  //             //                           ]),
-  //             //                     ),
-  //             //                   ),
-  //             //                 );
-  //             //               },
-  //             //             ));
-  //             //       } else if (snapshot.connectionState !=
-  //             //           ConnectionState.done) {
-  //             //         return Container(
-  //             //           height: 200,
-  //             //           child: Center(
-  //             //             child: CircularProgressIndicator(),
-  //             //           ),
-  //             //         );
-  //             //       } else if (!snapshot.hasData &&
-  //             //           snapshot.connectionState == ConnectionState.done) {
-  //             //         return Expanded(
-  //             //             child: Center(child: Text('Tidak Ada Data')));
-  //             //       } else {
-  //             //         return Expanded(
-  //             //             child: Center(child: Text('Tidak Ada Data')));
-  //             //       }
-  //             //     }),
-  //             SizedBox(
-  //               height: 12,
-  //             ),
-  //             Padding(
-  //               padding: const EdgeInsets.only(right: 12),
-  //               child: Align(
-  //                 alignment: Alignment.bottomRight,
-  //                 child: Container(
-  //                   height: 40,
-  //                   width: 140,
-  //                   // color: Colors.green,
-  //                   decoration: BoxDecoration(
-  //                       color: BaseTheme.color,
-  //                       borderRadius: BorderRadius.circular(20)),
-  //                   child: InkWell(
-  //                     onTap: () {
-  //                       showDialogAddBarang(namaJenis);
-  //                     },
-  //                     child: Center(
-  //                         child: Text(
-  //                       "Tambah Barang",
-  //                       style: TextStyle(
-  //                           fontWeight: FontWeight.bold, color: Colors.white),
-  //                     )),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //     // Expanded(
-  //     //     flex: 1,
-  //     //     child: Container(
-  //     //       width: MediaQuery.of(context).size.width,
-  //     //       // color: Colors.red,
-  //     //       child: Column(
-  //     //         crossAxisAlignment: CrossAxisAlignment.start,
-  //     //         children: [
-  //     //           SizedBox(
-  //     //             height: 20,
-  //     //           ),
-  //     //           Padding(
-  //     //             padding: const EdgeInsets.only(left: 10.0),
-  //     //             child: Text(
-  //     //               "Jenis",
-  //     //               style: TextStyle(
-  //     //                 fontSize: 30,
-  //     //                 fontWeight: FontWeight.bold,
-  //     //               ),
-  //     //             ),
-  //     //           ),
-  //     //           SizedBox(
-  //     //             height: 20,
-  //     //           ),
-
-  // TODO: Stream Jenis
-  //     //           // StreamBuilder<dynamic>(
-  //     //           //     stream: dataJenis.stream,
-  //     //           //     builder: (context, snapshot) {
-  //     //           //       if (snapshot.hasError) {
-  //     //           //         return Text(snapshot.error.toString());
-  //     //           //       } else if (snapshot.hasData) {
-  //     //           //         var jumlahData = snapshot.data!.length;
-  //     //           //         var data = snapshot.data;
-  //  ngakalin get jenis id dan nama
-  //     //           //         var jenis =
-  //     //           //             List<String>.generate(0, (_) => [].toString());
-  //     //           //         var idGet = List<int>.generate(
-  //     //           //             0, (_) => int.parse([].toString()));
-  //     //           //         // print(jenis);
-  //     //           //         for (var i = 0; i < jumlahData; i++) {
-  //     //           //           jenis.add(data[i]['jenis_barang']);
-  //     //           //           idGet.add(data[i]['id_jenis']);
-  //     //           //         }
-  //     //           //         namaJenis = jenis;
-  //     //           //         idJenis = idGet;
-  //     //           //         // print(namaJenis);
-  //     //           //         // print(idGet);
-  //     //           //         // print(jenis);
-  //     //           //         return Container(
-  //     //           //             height: 180,
-  //     //           //             // color: Colors.black,
-  //     //           //             child: ListView.builder(
-  //     //           //               physics: BouncingScrollPhysics(),
-  //     //           //               scrollDirection: Axis.horizontal,
-  //     //           //               itemCount: jumlahData,
-  //     //           //               itemBuilder: (context, index) {
-  //     //           //                 // jenis.add(data[index]['jenis_barang']);
-  //     //           //                 return Padding(
-  //     //           //                   padding: const EdgeInsets.all(8.0),
-  //     //           //                   child: Container(
-  //     //           //                     height: 12,
-  //     //           //                     width: 140,
-  //     //           //                     decoration: BoxDecoration(
-  //     //           //                       color: Colors.grey[200],
-  //     //           //                       borderRadius: BorderRadius.circular(12),
-  //     //           //                     ),
-  //     //           //                     child: Padding(
-  //     //           //                       padding: const EdgeInsets.all(8.0),
-  //     //           //                       child: Column(
-  //     //           //                           crossAxisAlignment:
-  //     //           //                               CrossAxisAlignment.start,
-  //     //           //                           mainAxisAlignment:
-  //     //           //                               MainAxisAlignment.spaceAround,
-  //     //           //                           children: [
-  //     //           //                             Text(
-  //     //           //                               data[index]['jenis_barang'],
-  //     //           //                               style: TextStyle(
-  //     //           //                                 fontSize: 22,
-  //     //           //                               ),
-  //     //           //                             ),
-  //     //           //                             // SizedBox(
-  //     //           //                             //   height: 80,
-  //     //           //                             // ),
-  //     //           //                           ]),
-  //     //           //                     ),
-  //     //           //                   ),
-  //     //           //                 );
-  //     //           //               },
-  //     //           //             ));
-  //     //           //       } else if (snapshot.connectionState !=
-  //     //           //           ConnectionState.done) {
-  //     //           //         return Container(
-  //     //           //           height: 200,
-  //     //           //           child: Center(
-  //     //           //             child: CircularProgressIndicator(),
-  //     //           //           ),
-  //     //           //         );
-  //     //           //       } else if (!snapshot.hasData &&
-  //     //           //           snapshot.connectionState == ConnectionState.done) {
-  //     //           //         return Expanded(
-  //     //           //             child: Center(child: Text('Tidak Ada Data')));
-  //     //           //       } else {
-  //     //           //         return Expanded(
-  //     //           //             child: Center(child: Text('Tidak Ada Data')));
-  //     //           //       }
-  //     //           //     })
-  //     //         ],
-  //     //       ),
-  //     //     ))
-  //   ],
-  // );
-  // }
 
   Widget _header() {
     return SizedBox(
@@ -919,9 +575,7 @@ class _BarangPageState extends State<BarangPage> {
                         // idJenis.add(int.parse(e.idJenis.toString()));
                       },
                     ).toList(); // Ngakalin get id terakhir karena backend belum set auto fill id
-                    // print(data);
-                    // print(data.length);
-                    // print(idGet);
+
                     print(jenisGet);
                     idJenis = idGet;
                     namaJenis = jenisGet;
@@ -962,9 +616,6 @@ class _BarangPageState extends State<BarangPage> {
                                                           "Menghapus data jenis akan berpengaruh kepada perubahan seluruh jenis barang yang terhubung akan dipindahkan ke kategori 'Lain-lain' Apakah Anda yakin ingin menghapus ${item.jenisBarang.toString()}?",
                                                           int.parse(item.idJenis
                                                               .toString()));
-                                                      // JenisRepo.deleteTransaksi(
-                                                      //     int.parse(item.idJenis
-                                                      //         .toString()));
                                                     },
                                                     child: const Icon(
                                                       Icons.delete_outline,
@@ -975,25 +626,6 @@ class _BarangPageState extends State<BarangPage> {
                                               ),
                                             ),
                                           )),
-                                      // const Padding(
-                                      //   padding:
-                                      //       EdgeInsets.only(right: 22, top: 6),
-                                      //   child: Align(
-                                      //     alignment: Alignment.topRight,
-                                      //     child: Icon(
-                                      //       Icons.remove_circle_outline,
-                                      //       color: Colors.red,
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                      // Align(
-                                      //   alignment: Alignment.bottomRight,
-                                      //   child: Icon(
-                                      //     Icons.remove_circle_outline_sharp,
-                                      //     color: Colors.red,
-                                      //     size: 16,
-                                      //   ),
-                                      // )
                                     ],
                                   ),
                                 ))
@@ -1009,43 +641,6 @@ class _BarangPageState extends State<BarangPage> {
                 },
               ),
             ),
-
-            // TODO: nanti dibuat list jenis
-            // child: ListView(
-            //   scrollDirection: Axis.horizontal,
-            //   children: [
-            //     Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Container(
-            //         height: 70,
-            //         width: 160,
-            //         decoration: BoxDecoration(
-            //             color: Colors.grey[200],
-            //             borderRadius: BorderRadius.circular(10)),
-            //       ),
-            //     ),
-            //     Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Container(
-            //         height: 70,
-            //         width: 160,
-            //         decoration: BoxDecoration(
-            //             color: Colors.grey[200],
-            //             borderRadius: BorderRadius.circular(10)),
-            //       ),
-            //     ),
-            //     Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Container(
-            //         height: 70,
-            //         width: 160,
-            //         decoration: BoxDecoration(
-            //             color: Colors.grey[200],
-            //             borderRadius: BorderRadius.circular(10)),
-            //       ),
-            //     ),
-            //   ],
-            // ),
           ),
         ],
       ),
@@ -1164,33 +759,9 @@ class _BarangPageState extends State<BarangPage> {
                               ))
                           .toList(),
                     );
-                    // return StaggeredGridView.countBuilder(
-                    //   crossAxisCount: 2,
-                    //   itemBuilder: (context, index) {
-                    //     return Container(
-                    //       height: 10,
-                    //       width: 10,
-                    //       color: Colors.red,
-                    //     );
-                    //   },
-                    //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-                    // );
                   },
                   separatorBuilder: (context, index) => const SizedBox(),
                   itemCount: 1);
-
-              // return StaggeredGridView.countBuilder(
-              //   shrinkWrap: true,
-              //   crossAxisCount: 2,
-              //   itemBuilder: (context, index) {
-              //     return Container(
-              //       height: 10,
-              //       width: 10,
-              //       color: Colors.red,
-              //     );
-              //   },
-              //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-              // );
             } else {
               return Padding(
                 padding: const EdgeInsets.only(top: 18.0),
@@ -1243,33 +814,9 @@ class _BarangPageState extends State<BarangPage> {
                           ))
                       .toList(),
                 );
-                // return StaggeredGridView.countBuilder(
-                //   crossAxisCount: 2,
-                //   itemBuilder: (context, index) {
-                //     return Container(
-                //       height: 10,
-                //       width: 10,
-                //       color: Colors.red,
-                //     );
-                //   },
-                //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-                // );
               },
               separatorBuilder: (context, index) => const SizedBox(),
               itemCount: 1);
-
-          // return StaggeredGridView.countBuilder(
-          //   shrinkWrap: true,
-          //   crossAxisCount: 2,
-          //   itemBuilder: (context, index) {
-          //     return Container(
-          //       height: 10,
-          //       width: 10,
-          //       color: Colors.red,
-          //     );
-          //   },
-          //   staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-          // );
         } else {
           return const Text("Tidak ada barang");
         }

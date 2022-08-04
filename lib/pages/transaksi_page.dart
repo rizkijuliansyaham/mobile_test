@@ -72,8 +72,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
       if (response.statusCode == 200) {
         // print(response.body);
         return json.decode(response.body);
-        // final response = await TransaksiRepo.getDataTransaksi();
-        // print(response);
       } else {
         print(response.statusCode);
       }
@@ -82,8 +80,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
     } finally {
       isDataLoading = false;
     }
-    // await TransaksiRepo.getDataTransaksi();
-    // dataTransaksi.addAll(TransaksiRepo.transaksiModel!.);
   }
 
   loadDataTransaksi() async {
@@ -92,33 +88,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
       return res;
     });
   }
-
-  // Future fetchDataBarang() async {
-  //   try {
-  //     isDataLoading = true;
-  //     final response =
-  //         await http.get(Uri.tryParse('http://192.168.8.100:5000/Barang')!);
-  //     if (response.statusCode == 200) {
-  //       print(response.body);
-  //       return json.decode(response.body);
-  //       // final response = await TransaksiRepo.getDataTransaksi();
-  //       // print(response);
-  //     } else {
-  //       print(response.statusCode);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   } finally {
-  //     isDataLoading = false;
-  //   }
-  // }
-
-  // loadDataBarang() async {
-  //   fetchDataBarang().then((res) async {
-  //     dataBarang.add(res);
-  //     return res;
-  //   });
-  // }
 
   void deleteDataTransaksi(int id) async {
     var delete = await TransaksiRepo.deleteTransaksi(id);
@@ -232,12 +201,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
                 (e) {
                   barangGet.add('${e.namaBarang}');
                   jenisGet.add(int.parse(e.idJenis.toString()));
-                  // idBelakang = int.parse(e.idJenis.toString());
-                  // idGet.add(int.parse(e.idJenis.toString()));
-                  // // jenisGet.add('${e.idJenis}, ${e.jenisBarang}');
-                  // jenisGet.add('${e.jenisBarang}');
-
-                  // idJenis.add(int.parse(e.idJenis.toString()));
                 },
               ).toList(); // Ngakalin get nama barang lisy
               // print(barangGet);
@@ -494,127 +457,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
             ));
           },
         ),
-
-        // TODO: "ini Merupakan data stream ;)"
-        // StreamBuilder<dynamic>(
-        //     stream: dataTransaksi.stream,
-        //     builder: (context, snapshot) {
-        //       if (snapshot.hasError) {
-        //         return Text(snapshot.error.toString());
-        //       } else if (snapshot.hasData) {
-        //         var jumlahData = snapshot.data!.length;
-        //         var data = snapshot.data;
-        //         // print(jumlahData);
-        //         return Container(
-        //           width: double.infinity,
-        //           height: MediaQuery.of(context).size.height,
-        //           color: Colors.white,
-        //           child: ListView.builder(
-        //             itemCount: jumlahData,
-        //             itemBuilder: (context, index) {
-        //               var str = data[index]['tanggal_transaksi'];
-        //               var arr = str.split('T');
-        //               var tanggal = arr[0].split('-');
-        //               var tanggalfix =
-        //                   '${tanggal[2]}-${tanggal[1]}-${tanggal[0]}';
-        //               var idBelakang = data[jumlahData - 1]['id_transaksi'];
-        //               idTerakhir = idBelakang;
-        //               // print(idBelakang);
-        //               return Padding(
-        //                 padding: const EdgeInsets.only(
-        //                     left: 8.0, right: 8.0, top: 4, bottom: 4),
-        //                 child: Container(
-        //                   height: 50,
-        //                   width: double.infinity,
-        //                   decoration: BoxDecoration(
-        //                     color: Colors.grey[200],
-        //                     borderRadius: BorderRadius.circular(8),
-        //                   ),
-        //                   child: Padding(
-        //                     padding: const EdgeInsets.only(left: 15.0),
-        //                     child: Row(
-        //                       mainAxisAlignment:
-        //                           MainAxisAlignment.spaceAround,
-        //                       children: [
-        //                         Expanded(
-        //                             flex: 1,
-        //                             child:
-        //                                 Text(data[index]['nama_barang'])),
-        //                         Expanded(
-        //                           flex: 1,
-        //                           child: Text(data[index]['jumlah_terjual']
-        //                               .toString()),
-        //                         ),
-        //                         Expanded(flex: 1, child: Text(tanggalfix)),
-        //                         IconButton(
-        //                             onPressed: () {
-        //                               // deleteDataTransaksi(
-        //                               //     data[index]['id_transaksi']);
-        //                               showDialogDelete(
-        //                                   context,
-        //                                   "Apakah Anda yakin ingin menghapus data ini?",
-        //                                   data[index]['id_transaksi']);
-        //                             },
-        //                             icon: Icon(
-        //                               Icons.delete,
-        //                               size: 18,
-        //                               color: Colors.red,
-        //                             ))
-        //                       ],
-        //                     ),
-        //                   ),
-        //                 ),
-        //               );
-        //             },
-        //           ),
-        //         );
-        //       } else if (snapshot.connectionState != ConnectionState.done) {
-        //         return Container(
-        //           height: 200,
-        //           child: Center(
-        //             child: CircularProgressIndicator(),
-        //           ),
-        //         );
-        //       } else if (!snapshot.hasData &&
-        //           snapshot.connectionState == ConnectionState.done) {
-        //         return Expanded(
-        //             child: Center(child: Text('Tidak Ada Data')));
-        //       } else {
-        //         return Expanded(
-        //             child: Center(child: Text('Tidak Ada Data')));
-        //       }
-        //     }),
-        // StreamBuilder(
-        //   stream: dataBarang.stream,
-        //   builder: (context, snapshot) {
-        //     if (snapshot.hasError) {
-        //       return SizedBox(
-        //         height: 1,
-        //       );
-        //     } else if (snapshot.hasData) {
-        //       var jumlahData = snapshot.data!.length;
-        //       var data = snapshot.data;
-        //       var nama = List<String>.generate(0, (_) => [].toString());
-        //       for (var i = 0; i < jumlahData; i++) {}
-        //       return SizedBox(
-        //         height: 1,
-        //       );
-        //     } else if (snapshot.connectionState != ConnectionState.done) {
-        //       return SizedBox(
-        //         height: 1,
-        //       );
-        //     } else if (!snapshot.hasData &&
-        //         snapshot.connectionState == ConnectionState.done) {
-        //       return SizedBox(
-        //         height: 1,
-        //       );
-        //     } else {
-        //       return SizedBox(
-        //         height: 1,
-        //       );
-        //     }
-        //   },
-        // ),
         SizedBox(
           height: 70,
         ),
